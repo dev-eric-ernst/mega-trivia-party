@@ -7,7 +7,7 @@ const path = require('path')
 const PORT = process.env.PORT || 3000
 //const INDEX = path.join(__dirname, '../index.html')
 
-giconst candidates = {
+const candidates = {
     candidates: [
         {
             id: '577805c3e30089e66c1ede16',

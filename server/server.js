@@ -7,7 +7,7 @@ const path = require('path')
 const PORT = process.env.PORT || 3000
 //const INDEX = path.join(__dirname, '../index.html')
 
-const candidates = {
+giconst candidates = {
     candidates: [
         {
             id: '577805c3e30089e66c1ede16',
@@ -39,6 +39,7 @@ const candidates = {
 
 const server = express()
     .use(express.static('public'))
+    .use(allowCrossDomain)
     .get('/bb', (req, res) => res.json(candidates))
     .listen(PORT, () => console.log(`Listening on ${PORT}`))
 

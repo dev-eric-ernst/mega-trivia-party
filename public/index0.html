@@ -1,13 +1,21 @@
 <html>
   <body>
     <p id='server-time'></p>
+    <button id="send">Click Me</button>
     <script>
       var HOST = location.origin.replace(/^http/, 'ws')
       var ws = new WebSocket(HOST);
+      ws.onopen = () => {
+        console.log('connection open')
+      }
       var el = document.getElementById('server-time');
       ws.onmessage = function (event) {
         el.innerHTML = 'Server time: ' + event.data;
       };
+
+      document.querySelector('#send').addEventListener('click', e => {
+        ws.send('hey')
+      })
     </script>
   </body>
 </html>

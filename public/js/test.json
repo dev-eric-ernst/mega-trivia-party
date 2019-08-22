@@ -1,0 +1,17 @@
+{
+    "revealAnswersDelay": 3000,
+    "answerTime": 12000,
+    "question": {
+        "category": "Entertainment: Film",
+        "difficulty": "medium",
+        "question": "What is the name of the first &quot;Star Wars&quot; film by release order?",
+        "correct_answer": "A New Hope",
+        "incorrect_answers": [
+            "The Phantom Menace",
+            "The Force Awakens",
+            "Revenge of the Sith"
+        ],
+        "correctIndex": 3,
+        "incorrectIndex": [1, 2, 0]
+    }
+}

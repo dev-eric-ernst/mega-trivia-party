@@ -1,0 +1,105 @@
+{
+    "response_code": 0,
+    "results": [
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "In what year was the first Transformers movie released?",
+            "correct_answer": "1986",
+            "incorrect_answers": ["2007", "1984", "2009"]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "What is the name of the first &quot;Star Wars&quot; film by release order?",
+            "correct_answer": "A New Hope",
+            "incorrect_answers": [
+                "The Phantom Menace",
+                "The Force Awakens",
+                "Revenge of the Sith"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "In the 1971 film &quot;Willy Wonka &amp; the Chocolate Factory&quot;, who played Willy Wonka?",
+            "correct_answer": "Gene Wilder",
+            "incorrect_answers": ["Shia LeBouf", "Peter Ostrum", "Johnny Depp"]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "What is the correct phrase for the Latin saying &quot;Romanes Eunt Domus&quot; in Monty Python&#039;s Life of Brian?",
+            "correct_answer": "Romani Ite Domum",
+            "incorrect_answers": [
+                "Romans Go Home",
+                "Roxani Ite Domum",
+                "Tomate Ite Domum"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "Who played Sgt. Gordon Elias in &#039;Platoon&#039; (1986)?",
+            "correct_answer": "Willem Dafoe",
+            "incorrect_answers": ["Charlie Sheen", "Matt Damon", "Johnny Depp"]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "In Back to the Future Part II, Marty and Dr. Emmett Brown go to which future date?",
+            "correct_answer": "October 21, 2015",
+            "incorrect_answers": [
+                "August 28, 2015",
+                "July 20, 2015",
+                "January 25, 2015"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "Darth Vader&#039;s famous reveal to Luke is iconic. But which of these is the right one?",
+            "correct_answer": "&quot;No. I am your father.&quot;",
+            "incorrect_answers": [
+                "&quot;Luke, I am your father.&quot;",
+                "&quot;You&#039;re wrong. I am your father.&quot;",
+                "&quot;The truth is that I am your father.&quot;"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "What year did the James Cameron film &quot;Titanic&quot; come out in theaters?",
+            "correct_answer": "1997",
+            "incorrect_answers": ["1996", "1998", "1999"]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "What was the name of the protagonist in the movie Commando (1985)?",
+            "correct_answer": "John Matrix",
+            "incorrect_answers": [
+                "Ben Richards",
+                "Douglas Quaid",
+                "Harry Tasker"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "What is Lilo&#039;s last name from Lilo and Stitch?",
+            "correct_answer": "Pelekai",
+            "incorrect_answers": ["Anoa\u02bbi", "Kealoha", "Ku\u02bbulei"]
+        }
+    ]
+}

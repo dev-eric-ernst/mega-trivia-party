@@ -1,41 +1,15 @@
 'use strict'
+const GameDispatcher = require('./GameDispatcher')
+const { Game } = require('./Game')
+const testConfig = require('./testQuizConfig')
 
 const express = require('express')
 const SocketServer = require('ws').Server
-const path = require('path')
+//const path = require('path')
 
 const PORT = process.env.PORT || 3000
 //const INDEX = path.join(__dirname, '../index.html')
 
-const candidates = {
-    candidates: [
-        {
-            id: '577805c3e30089e66c1ede16',
-            name: 'Spongebob',
-            votes: 2
-        },
-        {
-            id: '577805c3e30089e66c1ede18',
-            name: 'Squidward',
-            votes: 1
-        },
-        {
-            id: '577805c3e30089e66c1ede19',
-            name: 'Sandy',
-            votes: 0
-        },
-        {
-            id: '577805c3e30089e66c1ede17',
-            name: 'Patrick',
-            votes: 0
-        },
-        {
-            id: '577805c3e30089e66c1ede1a',
-            name: 'Gary',
-            votes: 1
-        }
-    ]
-}
 const cats = {
     cats: [
         {
@@ -77,18 +51,31 @@ const server = express()
         )
         next()
     })
-    .get('/bb', (req, res) => res.json(candidates))
     .get('/cats', (req, res) => res.json(cats))
     .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 const wss = new SocketServer({ server })
 
+const dispatcher = new GameDispatcher()
+
+// for now manually add a game
+const game = new Game(testConfig)
+
+;(async () => {
+    try {
+        await game.fetchQuestions()
+
+        dispatcher.addGame(game)
+        console.log('Game loaded - id: ' + game.id)
+    } catch (e) {
+        console.error(e)
+    }
+})()
+
 wss.on('connection', ws => {
     console.log('Client connected')
     ws.on('close', () => console.log('Client disconnected'))
     ws.onmessage = message => {
-        console.log('WTF?')
-
         console.log(message.data)
     }
 })

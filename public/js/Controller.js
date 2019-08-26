@@ -88,7 +88,9 @@ class Controller {
         document.querySelector('.leaderboard').style.display = 'none'
         document.querySelector('.header').style.display = 'block'
         document.querySelector('.question-display').style.display = 'block'
-        document.querySelector('.marketing').style.display = 'block'
+        document
+            .querySelectorAll('.marketing')
+            .forEach(div => (div.style.display = 'block'))
 
         // reset answers
         const answerNodes = document.querySelectorAll('.marketing p')
@@ -280,7 +282,9 @@ class Controller {
         document.querySelector('.leaderboard').style.display = 'block'
         document.querySelector('.header').style.display = 'none'
         document.querySelector('.question-display').style.display = 'none'
-        document.querySelector('.marketing').style.display = 'none'
+        document
+            .querySelectorAll('.marketing')
+            .forEach(div => (div.style.display = 'none'))
         document.querySelector('.leaderboard tbody').innerHTML = html.str
 
         // admin will request next question

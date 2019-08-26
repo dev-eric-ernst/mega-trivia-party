@@ -39,6 +39,7 @@ p.question {
 }
 .marketing {
     display: none;
+    margin: 0;
 }
 .answer {
     background: #c3cee0;

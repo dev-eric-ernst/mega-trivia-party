@@ -39,6 +39,10 @@ class Controller {
             case ACTIONS.question:
                 this.setupQuestion(data.question)
                 break
+            case ACTIONS.scoreboard:
+                console.log('Scoreboard data', data)
+
+                break
             default:
                 alert('An error occurred')
                 console.error('Invalid message action received', message)

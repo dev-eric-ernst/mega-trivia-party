@@ -194,8 +194,16 @@ exports.Game = class {
             previousScore: this.players[key].previousScore,
             display: key
         }))
-        playersArray.sort((a, b) => b.score - a.score)
-        console.log(playersArray)
+        playersArray.sort((a, b) => b.score - a.score) // highest score first
+
+        const json = JSON.stringify({
+            action: ACTIONS.scoreboard,
+            scores: playersArray
+        })
+        this.adminConnection.send(json)
+        Object.values(this.players).forEach(player => {
+            player.connection.send(json)
+        })
     }
 
     receiveMessage(message, ws) {

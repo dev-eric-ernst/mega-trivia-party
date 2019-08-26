@@ -1,6 +1,9 @@
 .quiz-header span {
     font-size: 24px;
 }
+.header {
+    display: none;
+}
 .question-difficulty {
     text-transform: capitalize;
 }
@@ -11,6 +14,18 @@ p.question {
 .jumbotron {
     padding-top: 10px;
     padding-bottom: 10px;
+}
+.lobby-display {
+    display: none;
+}
+.admin-lobby-display {
+    display: none;
+}
+.question-display {
+    display: none;
+}
+.marketing {
+    display: none;
 }
 .answer {
     background: #c3cee0;

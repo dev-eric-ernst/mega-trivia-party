@@ -1,27 +1,92 @@
 const SCORE_REFRESH_INTERVAL = 10
 const INITIAL_SCORE = 10000
+const TYPES = {
+    player: 'player',
+    admin: 'admin'
+}
+const ACTIONS = {
+    join: 'join',
+    joinError: 'join error',
+    waiting: 'waiting',
+    adminWaiting: 'adminWaiting',
+    launch: 'launch',
+    question: 'question'
+}
 
 class Controller {
+    constructor(ws) {
+        this.ws = ws
+    }
+
+    processMessage(message) {
+        const data = JSON.parse(message.data)
+        switch (data.action) {
+            case ACTIONS.joinError:
+                this.lobbyError(data)
+                break
+            case ACTIONS.waiting:
+                this.lobbyUpdate(data)
+                break
+            case ACTIONS.adminWaiting:
+                this.adminLobbyUpdate(data)
+                break
+            case ACTIONS.question:
+                this.setupQuestion(data.question)
+                break
+            default:
+                alert('An error occurred')
+                console.error('Invalid message action received', message)
+        }
+    }
+
+    lobbyUpdate(message) {
+        document.querySelector('#join-form').style.display = 'none'
+        const display = document.querySelector('.lobby-status')
+
+        display.textContent = `You and ${message.count - 1} other player${
+            message.count === 2 ? '' : 's'
+        } have joined this game`
+    }
+    lobbyError(errorData) {
+        // TODO present errors
+        alert(errorData.message)
+    }
+    adminLobbyUpdate(message) {
+        const playersList = document.querySelector('.lobby-players')
+        playersList.innerHTML = ''
+        console.log(message)
+
+        message.players.forEach(player => {
+            let li = document.createElement('li')
+            li.textContent = player
+            playersList.appendChild(li)
+        })
+    }
     setupQuestion(question) {
         this.question = question
-        document.getElementById('question-category').textContent =
+        document.querySelector('.lobby-display').style.display = 'none'
+        document.querySelector('.admin-lobby-display').style.display = 'none'
+        document.querySelector('.question-display').style.display = 'block'
+        document.querySelector('.marketing').style.display = 'block'
+
+        document.querySelector('#question-category').textContent =
             question.category
-        document.getElementById('question-difficulty').textContent =
+        document.querySelector('#question-difficulty').textContent =
             question.difficulty
-        document.getElementById('question').textContent = question.question
+        document.querySelector('#question').innerHTML = question.text
         window.setTimeout(() => {
             this.revealAnswers()
-        }, this.question.revealAnswersDelay)
+        }, question.revealAnswersDelay)
     }
 
     revealAnswers() {
-        let answerDivId = `answer${this.question.correctIndex + 1}`
-        document.getElementById(
+        let answerDivId = `#answer${this.question.correctIndex + 1}`
+        document.querySelector(
             answerDivId
-        ).textContent = this.question.correct_answer
-        this.question.incorrect_answers.forEach((incorrectAnswer, i) => {
-            answerDivId = `answer${this.question.incorrectIndex[i] + 1}`
-            document.getElementById(answerDivId).textContent = incorrectAnswer
+        ).innerHTML = this.question.correctAnswer
+        this.question.incorrectAnswers.forEach((incorrectAnswer, i) => {
+            answerDivId = `#answer${this.question.incorrectIndex[i] + 1}`
+            document.querySelector(answerDivId).innerHTML = incorrectAnswer
         })
 
         // track when started
@@ -35,7 +100,7 @@ class Controller {
 
         // set up timer
         this.timeLeft = this.question.answerTime / 1000
-        document.getElementById('time').textContent = this.timeLeft
+        document.querySelector('#time').textContent = this.timeLeft
         const timerId = window.setInterval(() => {
             this.updateTimer()
         }, 1000)
@@ -51,39 +116,30 @@ class Controller {
     }
 
     eliminateAnswer() {
-        const getRandomInt = (min, max) => {
-            min = Math.ceil(min)
-            max = Math.floor(max)
-            return Math.floor(Math.random() * (max - min)) + min //The maximum is exclusive and the minimum is inclusive
-        }
-        const removeIndex = getRandomInt(0, this.question.incorrectIndex.length)
-        const removedAnswerIndex = this.question.incorrectIndex.splice(
-            removeIndex,
-            1
-        )[0]
+        const removedAnswerIndex = this.question.incorrectIndex.pop()
 
-        let answerDivId = `answer${removedAnswerIndex + 1}`
-        const answerDiv = document.getElementById(answerDivId)
+        let answerDivId = `#answer${removedAnswerIndex + 1}`
+        const answerDiv = document.querySelector(answerDivId)
         if (answerDiv.className === 'answer') {
             answerDiv.className = 'answer-disabled'
         } else {
             // selected answer, indicate wrong and set score to zero
             answerDiv.className = 'answer-wrong'
             this.question.score = 0
-            document.getElementById('score').textContent = 0
+            document.querySelector('#score').textContent = 0
             window.clearInterval(this.scoreTimerId)
         }
 
         if (this.question.incorrectIndex.length === 0) {
-            answerDivId = `answer${this.question.correctIndex + 1}`
-            document.getElementById(answerDivId).className = 'answer-correct'
+            answerDivId = `#answer${this.question.correctIndex + 1}`
+            document.querySelector(answerDivId).className = 'answer-correct'
             window.clearInterval(this.answersTimerId)
         }
     }
 
     updateTimer() {
         this.timeLeft--
-        document.getElementById('time').textContent = this.timeLeft
+        document.querySelector('#time').textContent = this.timeLeft
         if (this.timeLeft === 0) {
             window.clearInterval(this.timerId)
         }
@@ -91,7 +147,7 @@ class Controller {
 
     updateScore() {
         const scoreRemaining = this.getScoreRemaining()
-        document.getElementById('score').textContent = scoreRemaining
+        document.querySelector('#score').textContent = scoreRemaining
 
         if (scoreRemaining === 0) {
             window.clearInterval(this.scoreTimerId)
@@ -124,7 +180,7 @@ class Controller {
         // calculate and freeze score
         const score = this.getScoreRemaining()
         this.question.score = score
-        document.getElementById('score').textContent = score
+        document.querySelector('#score').textContent = score
         window.clearInterval(this.scoreTimerId)
     }
 

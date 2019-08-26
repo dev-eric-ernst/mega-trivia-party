@@ -3,6 +3,24 @@ const uniqid = require('uniqid')
 const URL_ROOT = 'https://opentdb.com/api.php?'
 const categories = require('./categories')
 
+const QUIZ_STATES = {
+    initial: 'initial',
+    lobby: 'lobby'
+}
+const TYPES = {
+    player: 'player',
+    admin: 'admin'
+}
+const ACTIONS = {
+    join: 'join',
+    joinError: 'join error',
+    waiting: 'waiting',
+    adminWaiting: 'adminWaiting',
+    launch: 'launch',
+    question: 'question'
+}
+exports.ACTIONS = ACTIONS
+
 const buildRequestMap = questions => {
     // key captures category and difficulty
     // format is 10~medium
@@ -64,15 +82,16 @@ const orderAnswers = questions => {
         }
     })
 }
-exports.QUIZ_STATES = {
-    INITIAL: 'initial',
-    LOBBY: 'lobby'
-}
+
 exports.Game = class {
     constructor(quiz) {
         this.id = uniqid.time()
-        this.state = exports.QUIZ_STATES.INITIAL
+        this.state = QUIZ_STATES.initial
         this.config = quiz
+        this.players = {}
+        this.adminConnection = null
+        this.sendPlayersWaitingCount = this.sendPlayersWaitingCount.bind(this)
+        this.currentQuestion = 0
     }
 
     async fetchQuestions() {
@@ -112,6 +131,99 @@ exports.Game = class {
         }
 
         orderAnswers(questions)
-        this.state = exports.QUIZ_STATES.LOBBY
+        this.state = QUIZ_STATES.lobby
+        this.waitingInterval = setInterval(this.sendPlayersWaitingCount, 2000)
+    }
+
+    sendPlayersWaitingCount() {
+        const players = Object.keys(this.players)
+        const numPlayers = players.length
+        let message
+
+        if (this.adminConnection) {
+            message = JSON.stringify({
+                action: ACTIONS.adminWaiting,
+                players
+            })
+            this.adminConnection.send(message)
+        }
+
+        message = JSON.stringify({
+            action: ACTIONS.waiting,
+            count: numPlayers
+        })
+
+        for (const player in this.players) {
+            this.players[player].connection.send(message)
+        }
+    }
+
+    launchGame() {
+        // cancel interval that updates lobbies
+        clearInterval(this.waitingInterval)
+        this.sendNextQuestion()
+    }
+
+    sendNextQuestion() {
+        let nextQuestion = this.config.questions[this.currentQuestion]
+        console.log('&*^#*&$^#*^&$#*^$&#$')
+        console.log(this.nextQuestion)
+        console.log(nextQuestion)
+        nextQuestion = {
+            ...nextQuestion,
+            revealAnswersDelay: this.config.revealAnswersDelay,
+            answerTime: this.config.answerTime
+        }
+        console.log(nextQuestion)
+        this.currentQuestion++
+        const json = JSON.stringify({
+            action: ACTIONS.question,
+            question: nextQuestion
+        })
+
+        this.adminConnection.send(json)
+        Object.values(this.players).forEach(player => {
+            player.connection.send(json)
+        })
+    }
+
+    receiveMessage(message, ws) {
+        if (message.type === TYPES.player) {
+            switch (message.action) {
+                case ACTIONS.join:
+                    // check display name is unique
+                    if (this.players.hasOwnProperty(message.display)) {
+                        const errorData = {
+                            action: ACTIONS.joinError,
+                            message: `Display name \'${message.display}\' already taken`
+                        }
+                        ws.send(JSON.stringify(errorData))
+                    } else {
+                        this.players[message.display] = {
+                            connection: ws,
+                            score: 0
+                        }
+                        console.log(
+                            `${message.display} joined game ${message.game}`
+                        )
+                    }
+                    break
+                default:
+                    throw Error('Unrecognized action type: ' + message.action)
+            }
+        } else if (message.type === TYPES.admin) {
+            switch (message.action) {
+                case ACTIONS.adminWaiting:
+                    this.adminConnection = ws
+                    break
+                case ACTIONS.launch:
+                    this.launchGame()
+                    break
+                default:
+                    throw Error('Unrecognized action type: ' + message.action)
+            }
+        } else {
+            throw Error('Unrecognized message type: ' + message.type)
+        }
     }
 }

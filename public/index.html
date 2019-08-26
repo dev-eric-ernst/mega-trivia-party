@@ -28,41 +28,70 @@
         <![endif]-->
 
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
+        <script src="js/Controller.js"></script>
+        <script src="js/index.js"></script>
     </head>
 
     <body>
         <div class="container quiz-header">
             <div class="header clearfix">
-                <span class="text-muted" id="question-category">
-                </span>
+                <span class="text-muted" id="question-category"> </span>
                 <span class="text-muted pull-right">
-                    Difficulty: <span class="question-difficulty" id="question-difficulty"></span>
+                    Difficulty:
+                    <span
+                        class="question-difficulty"
+                        id="question-difficulty"
+                    ></span>
                 </span>
             </div>
 
-            <div class="jumbotron">
-                <p class="question" id="question">
-                </p>
+            <div class="jumbotron lobby-display">
+                <form id="join-form">
+                    <p>
+                        <label for="game-id">Game ID: </label
+                        ><input
+                            type="text"
+                            id="game-id"
+                            placeholder="enter the game id"
+                        />
+                    </p>
+                    <p>
+                        <label for="display-name">Display Name: </label
+                        ><input
+                            type="text"
+                            id="display-name"
+                            placeholder="enter a display name"
+                        />
+                    </p>
+                    <p><input type="submit" value="Join Game!" /></p>
+                </form>
+                <p class="question lobby-status"></p>
+            </div>
+
+            <div class="jumbotron admin-lobby-display">
+                <p class="game-id-display"></p>
+                <h2>PLAYERS</h2>
+                <ul class="lobby-players"></ul>
+                <p><button id="launch-button">Launch Game</button></p>
+            </div>
+
+            <div class="jumbotron question-display">
+                <p class="question" id="question"></p>
             </div>
 
             <div class="row marketing">
                 <div class="col-lg-6">
-                    <p class="answer" id="answer1">
-                    </p>
+                    <p class="answer" id="answer1"></p>
 
-                    <p class="answer" id="answer2">
-                    </p>
+                    <p class="answer" id="answer2"></p>
                     <p class="time-display" id="time-left">
                         TIME&nbsp;<span id="time" class="time-left"></span>
                     </p>
                 </div>
                 <div class="col-lg-6">
-                    <p class="answer" id="answer3">
-                    </p>
+                    <p class="answer" id="answer3"></p>
 
-                    <p class="answer" id="answer4">
-                    </p>
+                    <p class="answer" id="answer4"></p>
                     <p class="score-display">
                         SCORE&nbsp;<span id="score" class="time-left"></span>
                     </p>
@@ -70,7 +99,5 @@
             </div>
         </div>
         <!-- /container -->
-        <script src="js/Controller.js"></script>
-        <script src="js/index.js"></script>
     </body>
 </html>

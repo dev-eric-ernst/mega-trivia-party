@@ -24,6 +24,19 @@ p.question {
 .question-display {
     display: none;
 }
+.leaderboard {
+    display: none;
+}
+.leaderboard table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.leaderboard table,
+.leaderboard th,
+.leaderboard td {
+    padding: 5px;
+    border: 1px solid black;
+}
 .marketing {
     display: none;
 }

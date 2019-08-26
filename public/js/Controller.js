@@ -41,7 +41,7 @@ class Controller {
                 break
             case ACTIONS.scoreboard:
                 console.log('Scoreboard data', data)
-
+                this.displayLeaderboard(data.scores)
                 break
             default:
                 alert('An error occurred')
@@ -76,6 +76,7 @@ class Controller {
         this.question = question
         document.querySelector('.lobby-display').style.display = 'none'
         document.querySelector('.admin-lobby-display').style.display = 'none'
+        document.querySelector('.leaderboard').style.display = 'none'
         document.querySelector('.header').style.display = 'block'
         document.querySelector('.question-display').style.display = 'block'
         document.querySelector('.marketing').style.display = 'block'
@@ -230,5 +231,24 @@ class Controller {
         )
 
         return Math.max(scoreRemaining, 0)
+    }
+
+    displayLeaderboard(board) {
+        // reduce player array to HTML (table rows)
+        const html = board.reduce(
+            (accumulator, player) => {
+                const rowHtml = `<tr><td>${accumulator.row}</td><td>${player.display}</td><td>${player.previousScore}</td><td>${player.score}</td></tr>`
+                accumulator.str += rowHtml
+                accumulator.row++
+                return accumulator
+            },
+            { row: 1, str: '' }
+        )
+
+        document.querySelector('.leaderboard').style.display = 'block'
+        document.querySelector('.header').style.display = 'none'
+        document.querySelector('.question-display').style.display = 'none'
+        document.querySelector('.marketing').style.display = 'none'
+        document.querySelector('.leaderboard tbody').innerHTML = html.str
     }
 }

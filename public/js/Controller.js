@@ -10,13 +10,16 @@ const ACTIONS = {
     waiting: 'waiting',
     adminWaiting: 'adminWaiting',
     launch: 'launch',
-    question: 'question'
+    question: 'question',
+    score: 'score'
 }
 
 class Controller {
     constructor(ws) {
         this.ws = ws
         this.isAdmin = false
+        this.game = ''
+        this.display = ''
     }
 
     processMessage(message) {
@@ -137,8 +140,6 @@ class Controller {
             answerDivId = `#answer${this.question.correctIndex + 1}`
             document.querySelector(answerDivId).className = 'answer-correct'
             window.clearInterval(this.answersTimerId)
-
-            // SEND SCORE
         }
     }
 
@@ -147,6 +148,18 @@ class Controller {
         document.querySelector('#time').textContent = this.timeLeft
         if (this.timeLeft === 0) {
             window.clearInterval(this.timerId)
+
+            if (!this.isAdmin) {
+                // send score to server
+                const data = {
+                    type: TYPES.player,
+                    action: ACTIONS.score,
+                    game: this.game,
+                    score: this.question.score,
+                    display: this.display
+                }
+                this.ws.send(JSON.stringify(data))
+            }
         }
     }
 
@@ -155,6 +168,7 @@ class Controller {
         document.querySelector('#score').textContent = scoreRemaining
 
         if (scoreRemaining === 0) {
+            this.question.score = 0
             window.clearInterval(this.scoreTimerId)
         }
     }

@@ -17,7 +17,8 @@ const ACTIONS = {
     waiting: 'waiting',
     adminWaiting: 'adminWaiting',
     launch: 'launch',
-    question: 'question'
+    question: 'question',
+    score: 'score'
 }
 exports.ACTIONS = ACTIONS
 
@@ -204,6 +205,9 @@ exports.Game = class {
                             `${message.display} joined game ${message.game}`
                         )
                     }
+                    break
+                case ACTIONS.score:
+                    console.log('score received', message)
                     break
                 default:
                     throw Error('Unrecognized action type: ' + message.action)

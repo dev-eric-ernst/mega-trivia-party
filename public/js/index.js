@@ -31,12 +31,12 @@ document.addEventListener('DOMContentLoaded', event => {
         setUpAdminLaunch(ws, gameId)
     } else {
         // player join form
-        addJoinFormListener(ws)
+        addJoinFormListener(ws, controller)
         document.querySelector('.score-display').style.display = 'block'
     }
 })
 
-const addJoinFormListener = ws => {
+const addJoinFormListener = (ws, controller) => {
     document.querySelector('.lobby-display').style.display = 'block'
     document
         .querySelector('#join-form')
@@ -46,6 +46,8 @@ const addJoinFormListener = ws => {
             const display = this.querySelector('#display-name').value.trim()
             // TODO validate
 
+            controller.display = display
+            controller.game = game
             const data = {
                 type: TYPES.player,
                 action: ACTIONS.join,

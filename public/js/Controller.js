@@ -1,6 +1,7 @@
 const SCORE_REFRESH_INTERVAL = 10
 const INITIAL_SCORE = 10000
 const ADMIN_SCOREBOARD_DELAY = 2000
+const ADMIN_NEXT_QUESTION_DELAY = 5000
 const TYPES = {
     player: 'player',
     admin: 'admin'
@@ -22,10 +23,12 @@ class Controller {
         this.isAdmin = false
         this.game = ''
         this.display = ''
+        this.selectedIndex = -1 // no answer selected
     }
 
     processMessage(message) {
         const data = JSON.parse(message.data)
+        console.log('Message received', data)
         switch (data.action) {
             case ACTIONS.joinError:
                 this.lobbyError(data)
@@ -40,8 +43,7 @@ class Controller {
                 this.setupQuestion(data.question)
                 break
             case ACTIONS.scoreboard:
-                console.log('Scoreboard data', data)
-                this.displayLeaderboard(data.scores)
+                this.displayLeaderboard(data)
                 break
             default:
                 alert('An error occurred')
@@ -64,7 +66,6 @@ class Controller {
     adminLobbyUpdate(message) {
         const playersList = document.querySelector('.lobby-players')
         playersList.innerHTML = ''
-        console.log(message)
 
         message.players.forEach(player => {
             let li = document.createElement('li')
@@ -80,6 +81,23 @@ class Controller {
         document.querySelector('.header').style.display = 'block'
         document.querySelector('.question-display').style.display = 'block'
         document.querySelector('.marketing').style.display = 'block'
+
+        // reset answers
+        const answerNodes = document.querySelectorAll('.marketing p')
+        answerNodes.forEach(node => {
+            if (
+                node.className !== 'time-display' &&
+                node.className !== 'score-display'
+            ) {
+                node.innerHTML = ''
+                node.className = 'answer'
+            }
+        })
+
+        this.selectedIndex = -1 // reset selected answer
+
+        document.querySelector('#score').textContent = ''
+        document.querySelector('#time').textContent = ''
 
         document.querySelector('#question-category').textContent =
             question.category
@@ -233,8 +251,14 @@ class Controller {
         return Math.max(scoreRemaining, 0)
     }
 
-    displayLeaderboard(board) {
+    displayLeaderboard(data) {
+        // display progress
+        document.querySelector(
+            '.leaderboard h2'
+        ).textContent = `After ${data.current} of ${data.total} questions...`
+
         // reduce player array to HTML (table rows)
+        const board = data.scores
         const html = board.reduce(
             (accumulator, player) => {
                 const rowHtml = `<tr><td>${accumulator.row}</td><td>${player.display}</td><td>${player.previousScore}</td><td>${player.score}</td></tr>`
@@ -250,5 +274,17 @@ class Controller {
         document.querySelector('.question-display').style.display = 'none'
         document.querySelector('.marketing').style.display = 'none'
         document.querySelector('.leaderboard tbody').innerHTML = html.str
+
+        // admin will request next question
+        if (this.isAdmin) {
+            const data = {
+                type: TYPES.admin,
+                action: ACTIONS.question,
+                game: this.game
+            }
+            setTimeout(() => {
+                this.ws.send(JSON.stringify(data))
+            }, ADMIN_NEXT_QUESTION_DELAY)
+        }
     }
 }

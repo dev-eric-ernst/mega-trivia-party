@@ -21,8 +21,11 @@ document.addEventListener('DOMContentLoaded', event => {
     }
 
     ws.onmessage = message => {
-        console.log('Message received', message)
         controller.processMessage(message)
+    }
+
+    ws.onclose = () => {
+        console.log('ws connection to game server closed')
     }
 
     if (gameId) {

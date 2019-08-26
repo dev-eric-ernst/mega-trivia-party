@@ -4,20 +4,12 @@ module.exports = {
     answerTime: 12000,
     questions: [
         {
-            category: '11',
-            difficulty: 'medium'
+            category: '18',
+            difficulty: 'easy'
         },
         {
-            category: '11',
-            difficulty: 'medium'
-        },
-        {
-            category: '11',
-            difficulty: 'medium'
-        },
-        {
-            category: '19',
-            difficulty: 'medium'
+            category: '18',
+            difficulty: 'easy'
         },
         {
             category: '18',
@@ -28,20 +20,12 @@ module.exports = {
             difficulty: 'medium'
         },
         {
-            category: '11',
+            category: '18',
             difficulty: 'hard'
         },
         {
-            category: '11',
-            difficulty: 'medium'
-        },
-        {
-            category: '11',
-            difficulty: 'medium'
-        },
-        {
-            category: '11',
-            difficulty: 'medium'
+            category: '18',
+            difficulty: 'hard'
         }
     ]
 }

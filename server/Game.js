@@ -104,6 +104,7 @@ exports.Game = class {
         // make multiple api calls in sequence (to take it easy on the API)
         for (const request of requestList) {
             try {
+                console.log(request.url)
                 const { data } = await axios.get(request.url)
                 if (data.response_code !== 0) {
                     console.log(data)
@@ -168,23 +169,33 @@ exports.Game = class {
     }
 
     sendNextQuestion() {
-        let nextQuestion = this.config.questions[this.currentQuestion]
-        nextQuestion = {
-            ...nextQuestion,
-            revealAnswersDelay: this.config.revealAnswersDelay,
-            answerTime: this.config.answerTime
+        if (this.currentQuestion < this.config.questions.length) {
+            let nextQuestion = this.config.questions[this.currentQuestion]
+            nextQuestion = {
+                ...nextQuestion,
+                revealAnswersDelay: this.config.revealAnswersDelay,
+                answerTime: this.config.answerTime
+            }
+
+            this.currentQuestion++
+            const json = JSON.stringify({
+                action: ACTIONS.question,
+                question: nextQuestion
+            })
+
+            this.adminConnection.send(json)
+            Object.values(this.players).forEach(player => {
+                player.connection.send(json)
+            })
+        } else {
+            // game finished, close connections
+            // TODO send winner message
+            console.log('shutting down game ' + this.id)
+            this.adminConnection.close()
+            Object.values(this.players).forEach(player => {
+                player.connection.close()
+            })
         }
-
-        this.currentQuestion++
-        const json = JSON.stringify({
-            action: ACTIONS.question,
-            question: nextQuestion
-        })
-
-        this.adminConnection.send(json)
-        Object.values(this.players).forEach(player => {
-            player.connection.send(json)
-        })
     }
 
     scoreboard() {
@@ -198,7 +209,9 @@ exports.Game = class {
 
         const json = JSON.stringify({
             action: ACTIONS.scoreboard,
-            scores: playersArray
+            scores: playersArray,
+            current: this.currentQuestion,
+            total: this.config.questions.length
         })
         this.adminConnection.send(json)
         Object.values(this.players).forEach(player => {
@@ -244,6 +257,9 @@ exports.Game = class {
                     break
                 case ACTIONS.scoreboard:
                     this.scoreboard()
+                    break
+                case ACTIONS.question:
+                    this.sendNextQuestion()
                     break
                 default:
                     throw Error('Unrecognized action type: ' + message.action)

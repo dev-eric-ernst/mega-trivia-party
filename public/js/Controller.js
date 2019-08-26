@@ -1,5 +1,6 @@
 const SCORE_REFRESH_INTERVAL = 10
 const INITIAL_SCORE = 10000
+const ADMIN_SCOREBOARD_DELAY = 2000
 const TYPES = {
     player: 'player',
     admin: 'admin'
@@ -11,7 +12,8 @@ const ACTIONS = {
     adminWaiting: 'adminWaiting',
     launch: 'launch',
     question: 'question',
-    score: 'score'
+    score: 'score',
+    scoreboard: 'scoreboard'
 }
 
 class Controller {
@@ -70,6 +72,7 @@ class Controller {
         this.question = question
         document.querySelector('.lobby-display').style.display = 'none'
         document.querySelector('.admin-lobby-display').style.display = 'none'
+        document.querySelector('.header').style.display = 'block'
         document.querySelector('.question-display').style.display = 'block'
         document.querySelector('.marketing').style.display = 'block'
 
@@ -159,6 +162,17 @@ class Controller {
                     display: this.display
                 }
                 this.ws.send(JSON.stringify(data))
+            } else {
+                // initiate scoreboard update
+                // (small delay to ensure all clients have time to submit scores)
+                setTimeout(() => {
+                    const adminData = {
+                        type: TYPES.admin,
+                        action: ACTIONS.scoreboard,
+                        game: this.game
+                    }
+                    this.ws.send(JSON.stringify(adminData))
+                }, ADMIN_SCOREBOARD_DELAY)
             }
         }
     }

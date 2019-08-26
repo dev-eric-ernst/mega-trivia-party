@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', event => {
     if (gameId) {
         // admin
         controller.isAdmin = true
+        controller.game = gameId
         setUpAdminLaunch(ws, gameId)
     } else {
         // player join form

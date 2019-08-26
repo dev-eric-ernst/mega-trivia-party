@@ -18,7 +18,8 @@ const ACTIONS = {
     adminWaiting: 'adminWaiting',
     launch: 'launch',
     question: 'question',
-    score: 'score'
+    score: 'score',
+    scoreboard: 'scoreboard'
 }
 exports.ACTIONS = ACTIONS
 
@@ -121,6 +122,7 @@ exports.Game = class {
                             question.text = result.question
                             question.correctAnswer = result.correct_answer
                             question.incorrectAnswers = result.incorrect_answers
+                            question.category = result.category
                             break
                         }
                     }
@@ -185,6 +187,17 @@ exports.Game = class {
         })
     }
 
+    scoreboard() {
+        // convert players map to an array
+        const playersArray = Object.keys(this.players).map(key => ({
+            score: this.players[key].score,
+            previousScore: this.players[key].previousScore,
+            display: key
+        }))
+        playersArray.sort((a, b) => b.score - a.score)
+        console.log(playersArray)
+    }
+
     receiveMessage(message, ws) {
         if (message.type === TYPES.player) {
             switch (message.action) {
@@ -207,7 +220,8 @@ exports.Game = class {
                     }
                     break
                 case ACTIONS.score:
-                    console.log('score received', message)
+                    this.players[message.display].score += message.score
+                    this.players[message.display].previousScore = message.score
                     break
                 default:
                     throw Error('Unrecognized action type: ' + message.action)
@@ -219,6 +233,9 @@ exports.Game = class {
                     break
                 case ACTIONS.launch:
                     this.launchGame()
+                    break
+                case ACTIONS.scoreboard:
+                    this.scoreboard()
                     break
                 default:
                     throw Error('Unrecognized action type: ' + message.action)

@@ -166,15 +166,12 @@ exports.Game = class {
 
     sendNextQuestion() {
         let nextQuestion = this.config.questions[this.currentQuestion]
-        console.log('&*^#*&$^#*^&$#*^$&#$')
-        console.log(this.nextQuestion)
-        console.log(nextQuestion)
         nextQuestion = {
             ...nextQuestion,
             revealAnswersDelay: this.config.revealAnswersDelay,
             answerTime: this.config.answerTime
         }
-        console.log(nextQuestion)
+
         this.currentQuestion++
         const json = JSON.stringify({
             action: ACTIONS.question,

@@ -1,5 +1,3 @@
-//import Controller from './Controller'
-
 document.addEventListener('DOMContentLoaded', event => {
     // set up web socket connection
     const HOST = location.origin.replace(/^http/, 'ws')
@@ -29,10 +27,12 @@ document.addEventListener('DOMContentLoaded', event => {
 
     if (gameId) {
         // admin
+        controller.isAdmin = true
         setUpAdminLaunch(ws, gameId)
     } else {
-        // player join string
+        // player join form
         addJoinFormListener(ws)
+        document.querySelector('.score-display').style.display = 'block'
     }
 })
 

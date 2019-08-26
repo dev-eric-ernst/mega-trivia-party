@@ -16,6 +16,7 @@ const ACTIONS = {
 class Controller {
     constructor(ws) {
         this.ws = ws
+        this.isAdmin = false
     }
 
     processMessage(message) {
@@ -107,12 +108,14 @@ class Controller {
         this.timerId = timerId
 
         // set up decreasing score
-        const scoreTimerId = window.setInterval(() => {
-            this.updateScore()
-        }, SCORE_REFRESH_INTERVAL)
-        this.scoreTimerId = scoreTimerId
+        if (!this.isAdmin) {
+            const scoreTimerId = window.setInterval(() => {
+                this.updateScore()
+            }, SCORE_REFRESH_INTERVAL)
+            this.scoreTimerId = scoreTimerId
 
-        this.setUpAnswerClickListeners()
+            this.setUpAnswerClickListeners()
+        }
     }
 
     eliminateAnswer() {
@@ -134,6 +137,8 @@ class Controller {
             answerDivId = `#answer${this.question.correctIndex + 1}`
             document.querySelector(answerDivId).className = 'answer-correct'
             window.clearInterval(this.answersTimerId)
+
+            // SEND SCORE
         }
     }
 
@@ -192,6 +197,6 @@ class Controller {
                     this.question.answerTime)
         )
 
-        return scoreRemaining
+        return Math.max(scoreRemaining, 0)
     }
 }

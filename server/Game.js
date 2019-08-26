@@ -104,9 +104,9 @@ exports.Game = class {
         // make multiple api calls in sequence (to take it easy on the API)
         for (const request of requestList) {
             try {
-                console.log(request.url)
                 const { data } = await axios.get(request.url)
                 if (data.response_code !== 0) {
+                    console.log(request.url)
                     console.log(data)
                     throw Error('Error fetching questions')
                 }
@@ -123,7 +123,6 @@ exports.Game = class {
                             question.text = result.question
                             question.correctAnswer = result.correct_answer
                             question.incorrectAnswers = result.incorrect_answers
-                            question.category = result.category
                             break
                         }
                     }

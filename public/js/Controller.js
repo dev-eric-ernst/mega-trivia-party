@@ -16,6 +16,14 @@ const ACTIONS = {
     score: 'score',
     scoreboard: 'scoreboard'
 }
+const CATEGORIES = {
+    list: [11, 18, 19],
+    map: {
+        '11': 'Entertainment: Film',
+        '18': 'Science: Computers',
+        '19': 'Science: Mathematics'
+    }
+}
 
 class Controller {
     constructor(ws) {
@@ -100,7 +108,7 @@ class Controller {
         document.querySelector('#time').textContent = ''
 
         document.querySelector('#question-category').textContent =
-            question.category
+            CATEGORIES.map[question.category]
         document.querySelector('#question-difficulty').textContent =
             question.difficulty
         document.querySelector('#question').innerHTML = question.text

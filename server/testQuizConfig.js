@@ -4,27 +4,27 @@ module.exports = {
     answerTime: 12000,
     questions: [
         {
-            category: '18',
+            category: '11',
             difficulty: 'easy'
         },
         {
-            category: '18',
+            category: '11',
             difficulty: 'easy'
         },
         {
-            category: '18',
+            category: '11',
             difficulty: 'medium'
         },
         {
-            category: '18',
+            category: '11',
             difficulty: 'medium'
         },
         {
-            category: '18',
+            category: '11',
             difficulty: 'hard'
         },
         {
-            category: '18',
+            category: '11',
             difficulty: 'hard'
         }
     ]

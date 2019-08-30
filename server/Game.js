@@ -103,7 +103,6 @@ exports.Game = class {
         const questions = this.config.questions
         const requestMap = buildRequestMap(questions)
         const requestList = buildRequestList(requestMap)
-        console.log('questions', questions)
 
         // make multiple api calls in sequence (to take it easy on the API)
         for (const request of requestList) {
@@ -206,10 +205,17 @@ exports.Game = class {
         // convert players map to an array
         const playersArray = Object.keys(this.players).map(key => ({
             score: this.players[key].score,
-            previousScore: this.players[key].previousScore,
+            previousScore: this.players[key].scoreReceived
+                ? this.players[key].previousScore
+                : 0,
             display: key
         }))
         playersArray.sort((a, b) => b.score - a.score) // highest score first
+
+        // reset score received flags
+        Object.values(this.players).forEach(player => {
+            player.scoreReceived = false
+        })
 
         const json = JSON.stringify({
             action: ACTIONS.scoreboard,
@@ -237,7 +243,9 @@ exports.Game = class {
                     } else {
                         this.players[message.display] = {
                             connection: ws,
-                            score: 0
+                            score: 0,
+                            previousScore: 0,
+                            scoreReceived: false
                         }
                         console.log(
                             `${message.display} joined game ${message.game}`
@@ -245,8 +253,11 @@ exports.Game = class {
                     }
                     break
                 case ACTIONS.score:
-                    this.players[message.display].score += message.score
-                    this.players[message.display].previousScore = message.score
+                    const player = this.players[message.display]
+                    const score = message.score ? message.score : 0 // 0 if no answer was submitted
+                    player.score += score
+                    player.previousScore = score
+                    player.scoreReceived = true
                     break
                 default:
                     throw Error('Unrecognized action type: ' + message.action)

@@ -6,7 +6,7 @@ module.exports = {
         {
             category: '11',
             difficulty: 'easy'
-        }
+        },
         {
             category: '11',
             difficulty: 'easy'

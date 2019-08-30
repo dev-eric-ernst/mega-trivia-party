@@ -4,12 +4,13 @@ const SocketServer = require('ws').Server
 const path = require('path')
 
 const GameDispatcher = require('./GameDispatcher')
-const { Game } = require('./Game')
-const testConfig = require('./testQuizConfig')
 
 const PORT = process.env.PORT || 3000
 const INDEX = path.join(__dirname, '../public/index.html')
 const cats = require('./routes/cats') // for WDI bitkittens assignment
+
+// for testing only
+const testConfig = require('./testQuizConfig')
 
 const app = express()
     .use(express.static('public'))
@@ -21,10 +22,13 @@ app.get('/quiz/:id/launch', async (req, res) => {
     // TODO get quiz config from database using id in path
     try {
         // const quizId = req.params.id
-        const game = new Game(testConfig)
+
+        // get quiz config from database
+        const quizConfig = JSON.parse(JSON.stringify(testConfig))
+
+        const game = dispatcher.createNewGame(quizConfig)
         await game.fetchQuestions()
 
-        dispatcher.addGame(game)
         console.log('Game loaded - id: ' + game.id)
         res.redirect('/index.html?admin=' + game.id)
     } catch (e) {
@@ -41,6 +45,7 @@ wss.on('connection', ws => {
     ws.on('close', () => console.log('Client disconnected'))
     ws.onmessage = message => {
         const data = JSON.parse(message.data)
+
         dispatcher.dispatchMessage(data, ws)
     }
 })

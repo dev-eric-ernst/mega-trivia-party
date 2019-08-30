@@ -86,7 +86,7 @@ const orderAnswers = questions => {
 }
 
 exports.Game = class {
-    constructor(quiz) {
+    constructor(quiz, deleteThis) {
         this.id = uniqid.time()
         this.state = QUIZ_STATES.initial
         this.config = quiz
@@ -94,12 +94,16 @@ exports.Game = class {
         this.adminConnection = null
         this.sendPlayersWaitingCount = this.sendPlayersWaitingCount.bind(this)
         this.currentQuestion = 0
+
+        // call this when game is over
+        this.deleteThis = deleteThis
     }
 
     async fetchQuestions() {
         const questions = this.config.questions
         const requestMap = buildRequestMap(questions)
         const requestList = buildRequestList(requestMap)
+        console.log('questions', questions)
 
         // make multiple api calls in sequence (to take it easy on the API)
         for (const request of requestList) {
@@ -194,6 +198,7 @@ exports.Game = class {
             Object.values(this.players).forEach(player => {
                 player.connection.close()
             })
+            this.deleteThis(this.id)
         }
     }
 

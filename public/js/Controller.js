@@ -237,7 +237,13 @@ class Controller {
         if (this.selectedIndex >= 0) return
 
         const target = event.currentTarget
-
+        if (
+            target.className === 'answer-disabled' ||
+            target.className === 'answer-correct'
+        ) {
+            // answer already eliminated or identified as correct
+            return
+        }
         target.className = 'answer-selected'
         const id = target.id
         const selectedIndex = parseInt(id.slice(-1))

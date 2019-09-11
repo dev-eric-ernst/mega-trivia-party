@@ -5,7 +5,7 @@ const path = require('path')
 
 const GameDispatcher = require('./game-server/GameDispatcher')
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000
 
 // for testing only
 const testConfig = require('./game-server/testQuizConfig')

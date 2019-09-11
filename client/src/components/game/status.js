@@ -1,0 +1,5 @@
+export const JOIN = 'join'
+export const LOBBY = 'lobby'
+export const QUESTION = 'question'
+export const LEADERBOARD = 'leaderboard'
+export const WINNER = 'winner'

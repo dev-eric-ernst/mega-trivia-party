@@ -3,18 +3,14 @@ const express = require('express')
 const SocketServer = require('ws').Server
 const path = require('path')
 
-const GameDispatcher = require('./GameDispatcher')
+const GameDispatcher = require('./game-server/GameDispatcher')
 
 const PORT = process.env.PORT || 3000
-const INDEX = path.join(__dirname, '../public/index.html')
-const cats = require('./routes/cats') // for WDI bitkittens assignment
 
 // for testing only
-const testConfig = require('./testQuizConfig')
+const testConfig = require('./game-server/testQuizConfig')
 
-const app = express()
-    .use(express.static('public'))
-    .use('/cats', cats)
+const app = express().use(express.static('public'))
 
 const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 

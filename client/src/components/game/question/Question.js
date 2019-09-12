@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 
 const INITIAL = 0
-const ACTIVE_NO_ANSWER = 1
-// const ACTIVE_ANSWER = 2
-// const COMPLETE = 3
+const ACTIVE = 1
+// const COMPLETE = 2
 const INITIAL_SCORE = 10000
 // const SCORE_REFRESH_INTERVAL = 10
 
@@ -14,7 +13,8 @@ export default class Question extends Component {
         currentScore: INITIAL_SCORE,
         playerScore: 0,
         displayedAnswers: [0,1,2,3],
-        selectedAnswer: -1
+        selectedAnswer: -1,
+        secondsLeft: 0,
     }
 
     componentDidMount() {
@@ -24,8 +24,19 @@ export default class Question extends Component {
     }
 
     revealAnswers() {
-        this.setState(_ => ({
-            status: ACTIVE_NO_ANSWER
+
+        // set up timer
+        const timerId = window.setInterval(() => {
+            if (this.state.secondsLeft > 0) {
+                this.setState(state => ({secondsLeft: state.secondsLeft - 1}))
+            }
+            else {
+                window.clearInterval(timerId)
+            }
+        }, 1000)
+        this.setState((state, props) => ({
+            status: ACTIVE,
+            secondsLeft: props.question.answerTime / 1000
         }))
     }
 
@@ -109,7 +120,8 @@ export default class Question extends Component {
             <div className="row marketing">
                 <div className="col-lg-6">
                     <p className="time-display" id="time-left">
-                        TIME&nbsp;<span id="time" className="time-left"></span>
+                        TIME&nbsp;<span id="time" className="time-left">
+                            {this.state.status !== INITIAL && this.state.secondsLeft}</span>
                     </p>
                 </div>
                 <div className="col-lg-6">

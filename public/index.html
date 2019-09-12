@@ -34,17 +34,6 @@
 
     <body>
         <div class="container quiz-header">
-            <div class="header clearfix">
-                <span class="text-muted" id="question-category"> </span>
-                <span class="text-muted pull-right">
-                    Difficulty:
-                    <span
-                        class="question-difficulty"
-                        id="question-difficulty"
-                    ></span>
-                </span>
-            </div>
-
             <div class="jumbotron lobby-display">
                 <form id="join-form">
                     <p>
@@ -75,10 +64,6 @@
                 <p><button id="launch-button">Launch Game</button></p>
             </div>
 
-            <div class="jumbotron question-display">
-                <p class="question" id="question"></p>
-            </div>
-
             <div class="jumbotron leaderboard">
                 <h2></h2>
                 <table>
@@ -95,6 +80,21 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+            </div>
+
+            <div class="header clearfix">
+                <span class="text-muted" id="question-category"> </span>
+                <span class="text-muted pull-right">
+                    Difficulty:
+                    <span
+                        class="question-difficulty"
+                        id="question-difficulty"
+                    ></span>
+                </span>
+            </div>
+
+            <div class="jumbotron question-display">
+                <p class="question" id="question"></p>
             </div>
 
             <div class="row marketing">

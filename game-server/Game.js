@@ -138,37 +138,26 @@ exports.Game = class {
 
         orderAnswers(questions)
         this.state = QUIZ_STATES.lobby
-        this.waitingInterval = setInterval(this.sendPlayersWaitingCount, 2000)
     }
 
     sendPlayersWaitingCount() {
         const players = Object.keys(this.players)
-        const numPlayers = players.length
-        let message
-
-        if (this.adminConnection) {
-            message = JSON.stringify({
-                action: ACTIONS.adminWaiting,
-                game: this.id,
-                players
-            })
-            this.adminConnection.send(message)
+        const message = {
+            action: ACTIONS.adminWaiting,
+            game: this.id,
+            players
         }
 
-        message = JSON.stringify({
-            action: ACTIONS.waiting,
-            game: this.id,
-            count: numPlayers
-        })
+        this.adminConnection.send(JSON.stringify(message))
 
+        message.action = ACTIONS.waiting
         for (const player in this.players) {
-            this.players[player].connection.send(message)
+            this.players[player].connection.send(JSON.stringify(message))
         }
     }
 
     launchGame() {
         // cancel interval that updates lobbies
-        clearInterval(this.waitingInterval)
         this.sendNextQuestion()
     }
 
@@ -253,6 +242,7 @@ exports.Game = class {
                     console.log(
                         `${message.display} joined game ${message.game}`
                     )
+                    this.sendPlayersWaitingCount()
                 }
                 break
             case ACTIONS.score:

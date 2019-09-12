@@ -1,0 +1,109 @@
+import React, { Component } from 'react'
+const INITIAL = 0
+const ACTIVE_NO_ANSWER = 1
+// const ACTIVE_ANSWER = 2
+// const COMPLETE = 3
+const INITIAL_SCORE = 10000
+// const SCORE_REFRESH_INTERVAL = 10
+
+export default class Question extends Component {
+
+    state = {
+        status: INITIAL,
+        currentScore: INITIAL_SCORE,
+        playerScore: 0,
+        displayedAnswers: [0,1,2,3],
+        selectedAnswer: -1
+    }
+
+    componentDidMount() {
+        // set up reveal answers timeout
+        const {question} = this.props
+        window.setTimeout(() => {
+            this.setState(_ => ({
+                status: ACTIVE_NO_ANSWER
+            }))
+        }, question.revealAnswersDelay)
+    }
+
+    // helper function to determine if the answer text should be displayed
+    displayAnswer(index) {
+        if (this.state.status === INITIAL) {
+            return ''
+        }
+    
+        if (this.state.displayedAnswers.indexOf(index) < 0) {
+            return ''
+        }
+
+        const {question} = this.props
+        if (index === question.correctIndex) {
+            return decodeHtml(question.correctAnswer)
+        }
+
+        // find matching incorrect answer
+        const incorrectIndex = question.incorrectIndex.indexOf(index)        
+        
+        return decodeHtml(question.incorrectAnswers[incorrectIndex])
+    }
+
+    render() {
+        const {question} = this.props
+
+        return (
+            <>
+            <div className="header clearfix">
+                <span className="text-muted">{question.category}</span>
+                <span className="text-muted pull-right">
+                    Difficulty:
+                    <span
+                    className="question-difficulty"
+                    >{question.difficulty}</span>
+                </span>
+            </div>
+
+            <div className="jumbotron question-display">
+                <p className="question">{decodeHtml(question.text)}</p>
+            </div>
+            
+            <div className="row marketing">
+                <div className="col-lg-6">
+                    <p className="answer" id="answer0">{this.displayAnswer(0)}</p>
+                </div>
+                <div className="col-lg-6">
+                    <p className="answer" id="answer1">{this.displayAnswer(1)}</p>
+                </div>
+            </div>
+
+            <div className="row marketing">
+                <div className="col-lg-6">
+                    <p className="answer" id="answer2">{this.displayAnswer(2)}</p>
+                </div>
+                <div className="col-lg-6">
+                    <p className="answer" id="answer3">{this.displayAnswer(3)}</p>
+                </div>
+            </div>
+            <div className="row marketing">
+                <div className="col-lg-6">
+                    <p className="time-display" id="time-left">
+                        TIME&nbsp;<span id="time" className="time-left"></span>
+                    </p>
+                </div>
+                <div className="col-lg-6">
+                    <p className="score-display">
+                        SCORE&nbsp;<span id="score" className="time-left"></span>
+                    </p>
+                </div>
+            </div>
+            </>
+        )
+    }
+}
+
+// hack to decode HTML entities
+// https://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it
+const decodeHtml = html => {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}

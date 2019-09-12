@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { ADMIN_WAITING, JOIN, JOIN_ERROR } from './actions'
-import { WAITING_TO_JOIN, IN_LOBBY } from './status'
+import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION } from './actions'
+import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION } from './status'
 import Join from './join/Join'
 import Lobby from './lobby/Lobby'
+import Question from './question/Question'
 import './Game.css'
 
 class Game extends Component {
@@ -79,8 +80,11 @@ class Game extends Component {
   }
 
   launchGame() {
-    console.log('LAUNCH GAME!!!');
-    
+    const data = {
+      action: LAUNCH_GAME,
+      game: this.state.gameId
+    }
+    this.ws.send(JSON.stringify(data))
   }
 
   receiveMessage(message) {
@@ -92,8 +96,7 @@ class Game extends Component {
         alert(data.message)
         break
       case ADMIN_WAITING:
-        console.log(data)
-        this.setState(state => (
+        this.setState(_ => (
           {
             status: IN_LOBBY,
             gameId: data.game,
@@ -101,6 +104,25 @@ class Game extends Component {
             isAdmin: true
           }
         ))
+        break
+      case PLAYER_WAITING:
+          this.setState(_ => (
+            {
+              status: IN_LOBBY,
+              gameId: data.game,
+              players: data.players,
+              isAdmin: false
+            }
+          ))
+          break
+      case DISPLAY_QUESTION:
+          this.setState(_ => (
+            {
+              status: DISPLAYING_QUESTION,
+              currentQuestion: data.question
+            }
+          ))
+
         break
       default:
           alert('An error occurred')
@@ -117,7 +139,11 @@ class Game extends Component {
             players={this.state.players}
             isAdmin={this.state.isAdmin} 
             launchGame={this.launchGame}
-          />}
+          />
+        }
+        {this.state.status === DISPLAYING_QUESTION &&
+          <Question question={this.state.currentQuestion} />
+        }
       </>
     )
   }

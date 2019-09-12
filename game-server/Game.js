@@ -149,6 +149,7 @@ exports.Game = class {
         if (this.adminConnection) {
             message = JSON.stringify({
                 action: ACTIONS.adminWaiting,
+                game: this.id,
                 players
             })
             this.adminConnection.send(message)
@@ -156,6 +157,7 @@ exports.Game = class {
 
         message = JSON.stringify({
             action: ACTIONS.waiting,
+            game: this.id,
             count: numPlayers
         })
 
@@ -182,6 +184,7 @@ exports.Game = class {
             this.currentQuestion++
             const json = JSON.stringify({
                 action: ACTIONS.question,
+                game: this.id,
                 question: nextQuestion
             })
 
@@ -219,6 +222,7 @@ exports.Game = class {
 
         const json = JSON.stringify({
             action: ACTIONS.scoreboard,
+            game: this.id,
             scores: playersArray,
             current: this.currentQuestion,
             total: this.config.questions.length

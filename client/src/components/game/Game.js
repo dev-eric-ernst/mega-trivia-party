@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
 import { ADMIN_WAITING, JOIN, JOIN_ERROR } from './actions'
-import { WAITING_TO_JOIN } from './status'
+import { WAITING_TO_JOIN, IN_LOBBY } from './status'
 import Join from './join/Join'
+import Lobby from './lobby/Lobby'
 import './Game.css'
 
 class Game extends Component {
   
   state = {
-    status: WAITING_TO_JOIN,
+    status: '',
     gameId: '',
     displayName: '',
     score: 0,
     numQuestions: 0,
     numQuestionsAnswered: 0,
-    currentQuestion: null
-
+    players: [],
+    currentQuestion: null,
+    isAdmin: false
   }
 
   constructor() {
     super()
     this.joinGame = this.joinGame.bind(this)
+    this.launchGame = this.launchGame.bind(this)
   }
 
   componentDidMount() {
@@ -43,7 +46,16 @@ class Game extends Component {
                 game: gameId
             }
             ws.send(JSON.stringify(data))
+
+            this.setState(_ => (
+              {status: IN_LOBBY, gameId, isAdmin: true}
+            ))
         }
+        else {
+          this.setState(_ => (
+            {status: WAITING_TO_JOIN}
+          ))
+      }
     }
     
     ws.onmessage = message => {
@@ -66,6 +78,11 @@ class Game extends Component {
     this.ws.send(JSON.stringify(data))
   }
 
+  launchGame() {
+    console.log('LAUNCH GAME!!!');
+    
+  }
+
   receiveMessage(message) {
     const data = JSON.parse(message.data)
     console.log('Message received', data)
@@ -73,6 +90,17 @@ class Game extends Component {
     switch (data.action) {
       case JOIN_ERROR:
         alert(data.message)
+        break
+      case ADMIN_WAITING:
+        console.log(data)
+        this.setState(state => (
+          {
+            status: IN_LOBBY,
+            gameId: data.game,
+            players: data.players,
+            isAdmin: true
+          }
+        ))
         break
       default:
           alert('An error occurred')
@@ -82,7 +110,14 @@ class Game extends Component {
   render() {
     return (
       <>
-        {this.state.status === JOIN && <Join joinGame={this.joinGame} />}
+        {this.state.status === WAITING_TO_JOIN && <Join joinGame={this.joinGame} />}
+        {this.state.status === IN_LOBBY &&
+          <Lobby
+            gameId={this.state.gameId}
+            players={this.state.players}
+            isAdmin={this.state.isAdmin} 
+            launchGame={this.launchGame}
+          />}
       </>
     )
   }

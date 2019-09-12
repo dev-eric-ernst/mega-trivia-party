@@ -1,6 +1,8 @@
-const { Game, ACTIONS } = require('./Game')
+// singleton
 
-module.exports = class GameDispatcher {
+const { Game, JOIN_ERROR } = require('./Game')
+
+class GameDispatcher {
     constructor() {
         this.games = {}
         this.removeGame = this.removeGame.bind(this)
@@ -28,10 +30,15 @@ module.exports = class GameDispatcher {
             game.receiveMessage(message, ws)
         } else {
             const errorData = {
-                action: ACTIONS.joinError,
+                action: JOIN_ERROR,
                 message: `Game with id ${id} not found`
             }
             ws.send(JSON.stringify(errorData))
         }
     }
 }
+
+const gameDispatcher = new GameDispatcher()
+Object.freeze(gameDispatcher)
+
+module.exports = gameDispatcher

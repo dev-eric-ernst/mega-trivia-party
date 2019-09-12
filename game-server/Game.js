@@ -13,7 +13,7 @@ const TYPES = {
 }
 const ACTIONS = {
     join: 'join',
-    joinError: 'join error',
+    joinError: 'joinError',
     waiting: 'waiting',
     adminWaiting: 'adminWaiting',
     launch: 'launch',
@@ -230,57 +230,48 @@ exports.Game = class {
     }
 
     receiveMessage(message, ws) {
-        if (message.type === TYPES.player) {
-            switch (message.action) {
-                case ACTIONS.join:
-                    // check display name is unique
-                    if (this.players.hasOwnProperty(message.display)) {
-                        const errorData = {
-                            action: ACTIONS.joinError,
-                            message: `Display name \'${message.display}\' already taken`
-                        }
-                        ws.send(JSON.stringify(errorData))
-                    } else {
-                        this.players[message.display] = {
-                            connection: ws,
-                            score: 0,
-                            previousScore: 0,
-                            scoreReceived: false
-                        }
-                        console.log(
-                            `${message.display} joined game ${message.game}`
-                        )
+        switch (message.action) {
+            case ACTIONS.join:
+                // check display name is unique
+                if (this.players.hasOwnProperty(message.display)) {
+                    const errorData = {
+                        action: ACTIONS.joinError,
+                        message: `Display name \'${message.display}\' already taken`
                     }
-                    break
-                case ACTIONS.score:
-                    const player = this.players[message.display]
-                    const score = message.score ? message.score : 0 // 0 if no answer was submitted
-                    player.score += score
-                    player.previousScore = score
-                    player.scoreReceived = true
-                    break
-                default:
-                    throw Error('Unrecognized action type: ' + message.action)
-            }
-        } else if (message.type === TYPES.admin) {
-            switch (message.action) {
-                case ACTIONS.adminWaiting:
-                    this.adminConnection = ws
-                    break
-                case ACTIONS.launch:
-                    this.launchGame()
-                    break
-                case ACTIONS.scoreboard:
-                    this.scoreboard()
-                    break
-                case ACTIONS.question:
-                    this.sendNextQuestion()
-                    break
-                default:
-                    throw Error('Unrecognized action type: ' + message.action)
-            }
-        } else {
-            throw Error('Unrecognized message type: ' + message.type)
+                    ws.send(JSON.stringify(errorData))
+                } else {
+                    this.players[message.display] = {
+                        connection: ws,
+                        score: 0,
+                        previousScore: 0,
+                        scoreReceived: false
+                    }
+                    console.log(
+                        `${message.display} joined game ${message.game}`
+                    )
+                }
+                break
+            case ACTIONS.score:
+                const player = this.players[message.display]
+                const score = message.score ? message.score : 0 // 0 if no answer was submitted
+                player.score += score
+                player.previousScore = score
+                player.scoreReceived = true
+                break
+            case ACTIONS.adminWaiting:
+                this.adminConnection = ws
+                break
+            case ACTIONS.launch:
+                this.launchGame()
+                break
+            case ACTIONS.scoreboard:
+                this.scoreboard()
+                break
+            case ACTIONS.question:
+                this.sendNextQuestion()
+                break
+            default:
+                throw Error('Unrecognized action type: ' + message.action)
         }
     }
 }

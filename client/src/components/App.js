@@ -9,6 +9,7 @@ class App extends Component {
     return (
       <Router>
         <Route exact path="/" component={Game} />
+        <Route path="/index.html" component={Game} />
       </Router>
     )
   }

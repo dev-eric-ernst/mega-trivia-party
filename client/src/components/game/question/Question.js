@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 const INITIAL = 0
 const ACTIVE_NO_ANSWER = 1
 // const ACTIVE_ANSWER = 2
@@ -19,19 +20,21 @@ export default class Question extends Component {
     componentDidMount() {
         // set up reveal answers timeout
         const {question} = this.props
-        window.setTimeout(() => {
-            this.setState(_ => ({
-                status: ACTIVE_NO_ANSWER
-            }))
-        }, question.revealAnswersDelay)
+        window.setTimeout(() => {this.revealAnswers()}, question.revealAnswersDelay)
     }
 
-    // helper function to determine if the answer text should be displayed
+    revealAnswers() {
+        this.setState(_ => ({
+            status: ACTIVE_NO_ANSWER
+        }))
+    }
+
+    answerClick(index) {
+        console.log('PLEASE ' + index)
+    }
+
+    // helper function to get answer text
     displayAnswer(index) {
-        if (this.state.status === INITIAL) {
-            return ''
-        }
-    
         if (this.state.displayedAnswers.indexOf(index) < 0) {
             return ''
         }
@@ -68,19 +71,39 @@ export default class Question extends Component {
             
             <div className="row marketing">
                 <div className="col-lg-6">
-                    <p className="answer" id="answer0">{this.displayAnswer(0)}</p>
+                    {this.state.status !== INITIAL
+                    && <p 
+                        className="answer"
+                        onClick={() => { this.answerClick(0)}}
+                    >{this.displayAnswer(0)}</p>
+                    }
                 </div>
                 <div className="col-lg-6">
-                    <p className="answer" id="answer1">{this.displayAnswer(1)}</p>
+                    {this.state.status !== INITIAL
+                    && <p 
+                        className="answer"
+                        onClick={() => { this.answerClick(1)}}
+                    >{this.displayAnswer(1)}</p>
+                    }
                 </div>
-            </div>
+           </div>
 
             <div className="row marketing">
-                <div className="col-lg-6">
-                    <p className="answer" id="answer2">{this.displayAnswer(2)}</p>
+            <div className="col-lg-6">
+                    {this.state.status !== INITIAL
+                    && <p 
+                        className="answer"
+                        onClick={() => { this.answerClick(2)}}
+                    >{this.displayAnswer(2)}</p>
+                    }
                 </div>
                 <div className="col-lg-6">
-                    <p className="answer" id="answer3">{this.displayAnswer(3)}</p>
+                    {this.state.status !== INITIAL
+                    && <p 
+                        className="answer"
+                        onClick={() => { this.answerClick(3)}}
+                    >{this.displayAnswer(3)}</p>
+                    }
                 </div>
             </div>
             <div className="row marketing">
@@ -101,7 +124,8 @@ export default class Question extends Component {
 }
 
 // hack to decode HTML entities
-// https://stackoverflow.com/questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it
+// https://stackoverflow.com/
+// questions/7394748/whats-the-right-way-to-decode-a-string-that-has-special-html-entities-in-it
 const decodeHtml = html => {
     var txt = document.createElement("textarea");
     txt.innerHTML = html;

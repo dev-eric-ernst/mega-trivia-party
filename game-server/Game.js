@@ -3,14 +3,6 @@ const uniqid = require('uniqid')
 const URL_ROOT = 'https://opentdb.com/api.php?'
 const categories = require('./categories')
 
-const QUIZ_STATES = {
-    initial: 'initial',
-    lobby: 'lobby'
-}
-const TYPES = {
-    player: 'player',
-    admin: 'admin'
-}
 const ACTIONS = {
     join: 'join',
     joinError: 'joinError',
@@ -19,7 +11,8 @@ const ACTIONS = {
     launch: 'launch',
     question: 'question',
     score: 'score',
-    scoreboard: 'scoreboard'
+    scoreboard: 'scoreboard',
+    winner: 'winner',
 }
 exports.ACTIONS = ACTIONS
 
@@ -62,24 +55,20 @@ const buildRequestList = requestMap => {
     return requestList
 }
 
-//The maximum is exclusive and the minimum is inclusive
-const getRandomInt = (min, max) => {
-    min = Math.ceil(min)
-    max = Math.floor(max)
-    return Math.floor(Math.random() * (max - min)) + min
-}
-
 const orderAnswers = questions => {
     questions.forEach(question => {
         const indices = [0, 1, 2, 3]
         ;[question.correctIndex] = indices.splice(
-            getRandomInt(0, indices.length),
+            Math.floor(Math.random * indices.length),
             1
         )
 
         question.incorrectIndex = []
         for (let i = 0; i < 3; i++) {
-            let [idx] = indices.splice(getRandomInt(0, indices.length), 1)
+            let [idx] = indices.splice(
+                Math.floor(Math.random * indices.length),
+                1
+            )
             question.incorrectIndex.push(idx)
         }
     })
@@ -88,12 +77,12 @@ const orderAnswers = questions => {
 exports.Game = class {
     constructor(quiz, deleteThis) {
         this.id = uniqid.time()
-        this.state = QUIZ_STATES.initial
         this.config = quiz
         this.players = {}
         this.adminConnection = null
-        this.sendPlayersWaitingCount = this.sendPlayersWaitingCount.bind(this)
         this.currentQuestion = 0
+
+        this.sendPlayersWaitingCount = this.sendPlayersWaitingCount.bind(this)
 
         // call this when game is over
         this.deleteThis = deleteThis
@@ -137,7 +126,6 @@ exports.Game = class {
         }
 
         orderAnswers(questions)
-        this.state = QUIZ_STATES.lobby
     }
 
     sendPlayersWaitingCount() {
@@ -145,7 +133,7 @@ exports.Game = class {
         const message = {
             action: ACTIONS.adminWaiting,
             game: this.id,
-            players
+            players,
         }
 
         this.adminConnection.send(JSON.stringify(message))
@@ -157,40 +145,28 @@ exports.Game = class {
     }
 
     launchGame() {
-        // cancel interval that updates lobbies
         this.sendNextQuestion()
     }
 
     sendNextQuestion() {
-        if (this.currentQuestion < this.config.questions.length) {
-            let nextQuestion = this.config.questions[this.currentQuestion]
-            nextQuestion = {
-                ...nextQuestion,
-                revealAnswersDelay: this.config.revealAnswersDelay,
-                answerTime: this.config.answerTime
-            }
-
-            this.currentQuestion++
-            const json = JSON.stringify({
-                action: ACTIONS.question,
-                game: this.id,
-                question: nextQuestion
-            })
-
-            this.adminConnection.send(json)
-            Object.values(this.players).forEach(player => {
-                player.connection.send(json)
-            })
-        } else {
-            // game finished, close connections
-            // TODO send winner message
-            console.log('shutting down game ' + this.id)
-            this.adminConnection.close()
-            Object.values(this.players).forEach(player => {
-                player.connection.close()
-            })
-            this.deleteThis(this.id)
+        let nextQuestion = this.config.questions[this.currentQuestion]
+        nextQuestion = {
+            ...nextQuestion,
+            revealAnswersDelay: this.config.revealAnswersDelay,
+            answerTime: this.config.answerTime,
         }
+
+        this.currentQuestion++
+        const json = JSON.stringify({
+            action: ACTIONS.question,
+            game: this.id,
+            question: nextQuestion,
+        })
+
+        this.adminConnection.send(json)
+        Object.values(this.players).forEach(player => {
+            player.connection.send(json)
+        })
     }
 
     scoreboard() {
@@ -200,7 +176,7 @@ exports.Game = class {
             previousScore: this.players[key].scoreReceived
                 ? this.players[key].previousScore
                 : 0,
-            display: key
+            display: key,
         }))
         playersArray.sort((a, b) => b.score - a.score) // highest score first
 
@@ -209,17 +185,42 @@ exports.Game = class {
             player.scoreReceived = false
         })
 
-        const json = JSON.stringify({
-            action: ACTIONS.scoreboard,
-            game: this.id,
-            scores: playersArray,
-            current: this.currentQuestion,
-            total: this.config.questions.length
-        })
-        this.adminConnection.send(json)
-        Object.values(this.players).forEach(player => {
-            player.connection.send(json)
-        })
+        if (this.currentQuestion < this.config.questions.length) {
+            const json = JSON.stringify({
+                action: ACTIONS.scoreboard,
+                game: this.id,
+                scores: playersArray,
+                current: this.currentQuestion,
+                total: this.config.questions.length,
+            })
+            this.adminConnection.send(json)
+            Object.values(this.players).forEach(player => {
+                player.connection.send(json)
+            })
+        } else {
+            // game finished
+            const winner = playersArray[0]
+            const loser = playersArray[playersArray.length - 1]
+
+            const json = JSON.stringify({
+                action: ACTIONS.winner,
+                game: this.id,
+                scores: playersArray,
+            })
+
+            this.adminConnection.send(json)
+            Object.values(this.players).forEach(player => {
+                player.connection.send(json)
+            })
+
+            // close connections
+            console.log('shutting down game ' + this.id)
+            this.adminConnection.close()
+            Object.values(this.players).forEach(player => {
+                player.connection.close()
+            })
+            this.deleteThis(this.id)
+        }
     }
 
     receiveMessage(message, ws) {
@@ -229,7 +230,7 @@ exports.Game = class {
                 if (this.players.hasOwnProperty(message.display)) {
                     const errorData = {
                         action: ACTIONS.joinError,
-                        message: `Display name \'${message.display}\' already taken`
+                        message: `Display name \'${message.display}\' already taken`,
                     }
                     ws.send(JSON.stringify(errorData))
                 } else {
@@ -237,7 +238,7 @@ exports.Game = class {
                         connection: ws,
                         score: 0,
                         previousScore: 0,
-                        scoreReceived: false
+                        scoreReceived: false,
                     }
                     console.log(
                         `${message.display} joined game ${message.game}`

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION, SEND_SCORE, SCOREBOARD} from './actions'
-import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION, DISPLAYING_LEADERBOARD } from './status'
+import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION, SEND_SCORE, SCOREBOARD, WINNER} from './actions'
+import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION, DISPLAYING_LEADERBOARD, DISPLAYING_WINNER } from './status'
 import Join from './join/Join'
 import Lobby from './lobby/Lobby'
 import Question from './question/Question'
 import Leaderboard from './leaderboard/Leaderboard'
+import Winner from './winner'
 
 const ADMIN_SCOREBOARD_DELAY = 2000
 const ADMIN_NEXT_QUESTION_DELAY = 5000
@@ -173,6 +174,13 @@ class Game extends Component {
           }
 
           break
+      case WINNER:
+          this.setState(_ => ({
+            ...data,
+            status: DISPLAYING_WINNER
+          })
+          )
+          break
       default:
           alert('An error occurred')
           console.error('Invalid message action received', message)
@@ -204,6 +212,12 @@ class Game extends Component {
             current={this.state.current}
             total={this.state.total}
         />}
+        {status === DISPLAYING_WINNER &&
+          <Winner
+            winner={this.state.scores[0]}
+            loser={this.state.scores[this.state.scores.length - 1]}
+          />
+        }
       </>
     )
   }

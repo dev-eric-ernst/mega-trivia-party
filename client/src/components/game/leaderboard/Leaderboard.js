@@ -5,7 +5,7 @@ export default function Leaderboard({ scores, current, total }) {
         // reduce player array to HTML (table rows)
     const rows = scores.map((entry, i) => (
         <LeaderboardRow
-            rank={i}
+            rank={i + 1}
             player={entry.display}
             previousScore={entry.previousScore}
             score={entry.score}

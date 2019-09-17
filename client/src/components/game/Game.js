@@ -142,7 +142,7 @@ class Game extends Component {
           />
         }
         {this.state.status === DISPLAYING_QUESTION &&
-          <Question question={this.state.currentQuestion} />
+          <Question question={this.state.currentQuestion} isAdmin={this.state.isAdmin} />
         }
       </>
     )

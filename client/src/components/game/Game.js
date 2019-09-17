@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION, SEND_SCORE, SCOREBOARD} from './actions'
-import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION } from './status'
+import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION, DISPLAYING_LEADERBOARD } from './status'
 import Join from './join/Join'
 import Lobby from './lobby/Lobby'
 import Question from './question/Question'
+import Leaderboard from './leaderboard/Leaderboard'
 
 const ADMIN_SCOREBOARD_DELAY = 2000
+const ADMIN_NEXT_QUESTION_DELAY = 5000
 
 class Game extends Component {
   
@@ -79,6 +81,8 @@ class Game extends Component {
       display
     }
     this.ws.send(JSON.stringify(data))
+
+    this.setState(_ => ({displayName: display}))
   }
 
   launchGame() {
@@ -92,26 +96,26 @@ class Game extends Component {
   sendScore(score) {
     console.log(score);
     
-    // if (!this.isAdmin) {
-    //   // send score to server
-    //   const data = {
-    //       action: ACTIONS.score,
-    //       game: this.game,
-    //       score: this.question.score,
-    //       display: this.display
-    //   }
-    //   this.ws.send(JSON.stringify(data))
-    // } else {
-    //     // initiate scoreboard update
-    //     // (small delay to ensure all clients have time to submit scores)
-    //     setTimeout(() => {
-    //         const adminData = {
-    //             action: ACTIONS.scoreboard,
-    //             game: this.game
-    //         }
-    //         this.ws.send(JSON.stringify(adminData))
-    //     }, ADMIN_SCOREBOARD_DELAY)
-    // }
+    if (!this.state.isAdmin) {
+      // send score to server
+      const data = {
+          action: SEND_SCORE,
+          game: this.state.gameId,
+          score,
+          display: this.state.displayName
+      }
+      this.ws.send(JSON.stringify(data))
+    } else {
+        // initiate scoreboard update
+        // (small delay to ensure all clients have time to submit scores)
+        setTimeout(() => {
+            const adminData = {
+                action: SCOREBOARD,
+                game: this.state.gameId
+            }
+            this.ws.send(JSON.stringify(adminData))
+        }, ADMIN_SCOREBOARD_DELAY)
+    }
   }
 
   receiveMessage(message) {
@@ -149,18 +153,37 @@ class Game extends Component {
               currentQuestion: data.question
             }
           ))
+          break
+      case SCOREBOARD:
+          this.setState(_ => ({
+            ...data,
+            status: DISPLAYING_LEADERBOARD
+          })
+          )
+          
+          // admin will request next question
+          if (this.state.isAdmin) {
+            const data = {
+                action: DISPLAY_QUESTION,
+                game: this.state.gameId
+            }
+            setTimeout(() => {
+                this.ws.send(JSON.stringify(data))
+            }, ADMIN_NEXT_QUESTION_DELAY)
+          }
 
-        break
+          break
       default:
           alert('An error occurred')
           console.error('Invalid message action received', message)
 }
   }
   render() {
+    const { status } = this.state
     return (
       <>
-        {this.state.status === WAITING_TO_JOIN && <Join joinGame={this.joinGame} />}
-        {this.state.status === IN_LOBBY &&
+        {status === WAITING_TO_JOIN && <Join joinGame={this.joinGame} />}
+        {status === IN_LOBBY &&
           <Lobby
             gameId={this.state.gameId}
             players={this.state.players}
@@ -168,13 +191,19 @@ class Game extends Component {
             launchGame={this.launchGame}
           />
         }
-        {this.state.status === DISPLAYING_QUESTION &&
+        {status === DISPLAYING_QUESTION &&
           <Question
             question={this.state.currentQuestion}
             isAdmin={this.state.isAdmin}
             sendScore={this.sendScore}
           />
         }
+        {status === DISPLAYING_LEADERBOARD &&
+          <Leaderboard
+            scores={this.state.scores}
+            current={this.state.current}
+            total={this.state.total}
+        />}
       </>
     )
   }

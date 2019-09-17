@@ -17,7 +17,7 @@ const ACTIONS = {
 exports.ACTIONS = ACTIONS
 
 const buildRequestMap = questions => {
-    // key captures category and difficulty
+    // key captures category code and difficulty
     // format is 10~medium
     const requestMap = questions.reduce((accumulator, question) => {
         let key = `${question.category}~${question.difficulty}`
@@ -115,6 +115,7 @@ exports.Game = class {
                             question.text = result.question
                             question.correctAnswer = result.correct_answer
                             question.incorrectAnswers = result.incorrect_answers
+                            question.category = result.category // convert from code to display text
                             break
                         }
                     }

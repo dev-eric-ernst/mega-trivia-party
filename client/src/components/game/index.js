@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION, SEND_SCORE, SCOREBOARD, WINNER} from './actions'
 import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION, DISPLAYING_LEADERBOARD, DISPLAYING_WINNER } from './status'
-import Join from './join/Join'
-import Lobby from './lobby/Lobby'
-import Question from './question/Question'
-import Leaderboard from './leaderboard/Leaderboard'
+import Join from './join'
+import Lobby from './lobby'
+import Question from './question'
+import Leaderboard from './leaderboard'
 import Winner from './winner'
 
 const ADMIN_SCOREBOARD_DELAY = 2000

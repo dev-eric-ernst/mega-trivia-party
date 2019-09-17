@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import Game from './game/Game'
-import './App.css'
+import Game from './game'
 
 class App extends Component {
   

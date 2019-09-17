@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION } from './actions'
+import { ADMIN_WAITING, JOIN, JOIN_ERROR, PLAYER_WAITING, LAUNCH_GAME, DISPLAY_QUESTION, SEND_SCORE, SCOREBOARD} from './actions'
 import { WAITING_TO_JOIN, IN_LOBBY, DISPLAYING_QUESTION } from './status'
 import Join from './join/Join'
 import Lobby from './lobby/Lobby'
 import Question from './question/Question'
-import './Game.css'
+
+const ADMIN_SCOREBOARD_DELAY = 2000
 
 class Game extends Component {
   
@@ -24,6 +25,7 @@ class Game extends Component {
     super()
     this.joinGame = this.joinGame.bind(this)
     this.launchGame = this.launchGame.bind(this)
+    this.sendScore = this.sendScore.bind(this)
   }
 
   componentDidMount() {
@@ -87,6 +89,31 @@ class Game extends Component {
     this.ws.send(JSON.stringify(data))
   }
 
+  sendScore(score) {
+    console.log(score);
+    
+    // if (!this.isAdmin) {
+    //   // send score to server
+    //   const data = {
+    //       action: ACTIONS.score,
+    //       game: this.game,
+    //       score: this.question.score,
+    //       display: this.display
+    //   }
+    //   this.ws.send(JSON.stringify(data))
+    // } else {
+    //     // initiate scoreboard update
+    //     // (small delay to ensure all clients have time to submit scores)
+    //     setTimeout(() => {
+    //         const adminData = {
+    //             action: ACTIONS.scoreboard,
+    //             game: this.game
+    //         }
+    //         this.ws.send(JSON.stringify(adminData))
+    //     }, ADMIN_SCOREBOARD_DELAY)
+    // }
+  }
+
   receiveMessage(message) {
     const data = JSON.parse(message.data)
     console.log('Message received', data)
@@ -142,7 +169,11 @@ class Game extends Component {
           />
         }
         {this.state.status === DISPLAYING_QUESTION &&
-          <Question question={this.state.currentQuestion} isAdmin={this.state.isAdmin} />
+          <Question
+            question={this.state.currentQuestion}
+            isAdmin={this.state.isAdmin}
+            sendScore={this.sendScore}
+          />
         }
       </>
     )

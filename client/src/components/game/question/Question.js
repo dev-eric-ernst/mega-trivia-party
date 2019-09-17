@@ -5,7 +5,8 @@ const INITIAL = 0
 const ACTIVE = 1
 const COMPLETE = 2
 const INITIAL_SCORE = 10000
-// const SCORE_REFRESH_INTERVAL = 10
+const SCORE_REFRESH_INTERVAL = 10
+
 
 export default class Question extends Component {
 
@@ -46,26 +47,36 @@ export default class Question extends Component {
                 window.clearInterval(scoreTimerId)
             }
 
-        })
+        }, SCORE_REFRESH_INTERVAL)
 
-        const {question} = this.props
+        const { question } = this.props
         const answersTimerId = window.setInterval(() => {
             const numIncorrectAnswersDisplayed = this.state.incorrectAnswersIndex.length
             if (numIncorrectAnswersDisplayed > 1) {
                 // remove incorrect answer
                 const newIncorrectAnswersIndex = [...this.state.incorrectAnswersIndex]
                 const answerIndexToRemove = newIncorrectAnswersIndex.pop()
+
+                // check is player has selected answer that is being removed
                 const selectedAnswer = this.state.selectedAnswer === answerIndexToRemove
                 ? -1 : this.state.selectedAnswer
 
                 this.setState(_ => ({incorrectAnswersIndex: newIncorrectAnswersIndex, selectedAnswer}))
             }
             else {
+                // question timer finished
                 window.clearInterval(answersTimerId)
 
-                // TODO handle question complete
+                // capture player score
+                const score = question.correctIndex === this.state.selectedAnswer
+                ? this.state.scoreDisplay : 0
+
+                // TODO call props method to send score to server
+                this.props.sendScore(score)
+
                 this.setState(_ => ({
-                    status: COMPLETE
+                    status: COMPLETE,
+                    scoreDisplay: score
                 }))
             }
         }, question.answerTime / 3)
@@ -160,7 +171,7 @@ export default class Question extends Component {
         return (
             <>
             <div>
-                <span>{question.category}</span>
+                <span>Category: <span className="category">{question.category}</span></span>
                 <span>
                     Difficulty:
                     <span

@@ -4,5 +4,7 @@ export const ADMIN_WAITING = 'adminWaiting'
 export const PLAYER_WAITING = 'waiting'
 export const LAUNCH_GAME = 'launch'
 export const DISPLAY_QUESTION = 'question'
+export const SEND_SCORE = 'score'
+export const SCOREBOARD = 'scoreboard'
 
 

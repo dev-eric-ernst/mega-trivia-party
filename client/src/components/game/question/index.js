@@ -26,7 +26,7 @@ export default class Question extends Component {
 
     revealAnswers() {
 
-        // set up timer
+        // set up elapsed time display
         const timerId = window.setInterval(() => {
             if (this.state.secondsLeft > 0) {
                 this.setState(state => ({secondsLeft: state.secondsLeft - 1}))
@@ -101,7 +101,8 @@ export default class Question extends Component {
 
         if (index === question.correctIndex || this.state.incorrectAnswersIndex.indexOf(index) >= 0) {
             this.setState(_ => ({
-                selectedAnswer: index
+                selectedAnswer: index,
+                scoreDisplay: this.getScoreRemaining()
             }))    
         }
         else {

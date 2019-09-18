@@ -1,0 +1,42 @@
+h1 {
+    font-family: 'Righteous', cursive;
+    font-size: 48px;
+    color: #eee;
+    margin: 0;
+    text-align: center;
+}
+form {
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 5fr 8fr;
+    grid-gap: 30px;
+}
+label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+    color: #eee;
+    width: 200px;
+    margin-left: auto;
+    margin-right: 10px;
+    text-align: right;
+}
+input[type='text'] {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    width: 300px;
+    padding: 5px;
+    border-radius: 15px;
+    color: #333;
+}
+input[type='submit'] {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    width: 300px;
+    padding: 5px;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    border: 0;
+    border-radius: 15px;
+    color: #eee;
+    background-color: #8a25b1;
+}

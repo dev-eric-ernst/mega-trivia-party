@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import './index.css'
 
 class Join extends Component {
 
@@ -20,33 +21,29 @@ class Join extends Component {
 
     render() {
         return (
-            <div>
-                <form id="join-form" onSubmit={this.handleSubmit}>
-                    <p>
-                        <label htmlFor="game-id">Party Key: <input
-                            type="text"
-                            id="game-id"
-                            placeholder="enter the game key"
-                            required={true}
-                            ref={this.keyRef}
-                        />
-                        </label
-                        >
-                    </p>
-                    <p>
-                        <label htmlFor="display-name">Display Name: <input
-                            type="text"
-                            id="display-name"
-                            placeholder="enter a display name"
-                            required={true}
-                            ref={this.displayNameRef}
-                        />
-                        </label
-                        >
-                    </p>
-                    <p><input type="submit" value="Crash this Party!" /></p>
-                </form>
-            </div>
+            <>
+            <h1>CRASH A PARTY</h1>
+            <form id="join-form" onSubmit={this.handleSubmit}>
+                <label htmlFor="game-id">Key:</label>
+                <input
+                    type="text"
+                    id="game-id"
+                    placeholder="enter the game key"
+                    required={true}
+                    ref={this.keyRef}
+                />
+                <label htmlFor="display-name">Name:</label>
+                <input
+                    type="text"
+                    id="display-name"
+                    placeholder="enter a display name"
+                    required={true}
+                    ref={this.displayNameRef}
+                />
+                    
+                <input type="submit" value="Party!" />
+            </form>
+            </>
         )
     }
 }

@@ -7,7 +7,7 @@ export default function Lobby({ gameId, players, launchGame, isAdmin }) {
         <main className="lobby">
             {isAdmin &&
             <ol>
-                <li>Navigate to: <span className="large">megatriviaparty.com</span></li>
+                <li>Navigate to: <span className="large">{window.location.host}</span></li>
                 <li>Enter the following party key: <span className="large">{gameId}</span></li>
             </ol>
             }

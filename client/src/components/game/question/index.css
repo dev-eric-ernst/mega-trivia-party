@@ -1,0 +1,105 @@
+.question {
+    width: 80%;
+    margin: 0 auto;
+    background: #fff;
+    height: 85%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.question .header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 20px;
+    border-bottom: 1px solid #7f7777;
+}
+.question .header-info {
+    /* background-color: #e9ecef; */
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    color: #7f7777;
+}
+.question .question-display {
+    min-height: 100px;
+    background-color: #eee;
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+    color: #000;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #7f7777;
+    margin-bottom: 15px;
+}
+.question .difficulty {
+    text-transform: capitalize;
+}
+.question .answer-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.question .answer {
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+}
+.question .answer:nth-child(1) {
+    margin: 0 10px 10px 0;
+}
+.question .answer:nth-child(2) {
+    margin: 0 0 10px 10px;
+}
+.question .answer:nth-child(3) {
+    margin: 10px 10px 0 0;
+}
+.question .answer:nth-child(4) {
+    margin: 10px 0 0 10px;
+}
+.question .hidden {
+    background: #c3cee0;
+    font-weight: normal;
+    color: #00000000;
+}
+.question .active {
+    background: #c3cee0;
+    font-weight: normal;
+    color: #000;
+}
+.question .selected {
+    background: #77a4ed;
+    font-weight: bold;
+    color: #fff;
+}
+.question .eliminated {
+    background: #c3cee0;
+    font-weight: normal;
+    color: #000;
+    opacity: 0.2;
+}
+.question .correct {
+    background: #2ba639;
+    font-weight: bold;
+    color: #fff;
+}
+.question .incorrect {
+    background: #e03d14;
+    font-weight: bold;
+    color: #fff;
+}
+.question .stats {
+    background: #eee;
+    min-height: 50px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+    padding: 15px;
+    margin: 20px auto 0 auto;
+}
+.question .stats:first-child {
+    margin-right: 20px;
+}

@@ -59,14 +59,13 @@ const orderAnswers = questions => {
     questions.forEach(question => {
         const indices = [0, 1, 2, 3]
         ;[question.correctIndex] = indices.splice(
-            Math.floor(Math.random * indices.length),
+            Math.floor(Math.random() * indices.length),
             1
         )
-
         question.incorrectIndex = []
         for (let i = 0; i < 3; i++) {
             let [idx] = indices.splice(
-                Math.floor(Math.random * indices.length),
+                Math.floor(Math.random() * indices.length),
                 1
             )
             question.incorrectIndex.push(idx)

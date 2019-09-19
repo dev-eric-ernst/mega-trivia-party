@@ -21,7 +21,7 @@ class Join extends Component {
 
     render() {
         return (
-            <>
+            <main className="join">
             <h1>CRASH A PARTY</h1>
             <form id="join-form" onSubmit={this.handleSubmit}>
                 <label htmlFor="game-id">Key:</label>
@@ -43,7 +43,7 @@ class Join extends Component {
                     
                 <input type="submit" value="Party!" />
             </form>
-            </>
+            </main>
         )
     }
 }

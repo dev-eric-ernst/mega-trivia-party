@@ -95,17 +95,17 @@ class Game extends Component {
   }
 
   sendScore(score) {
-    console.log(score);
-    
     if (!this.state.isAdmin) {
       // send score to server
-      const data = {
+      setTimeout(() => {
+        const data = {
           action: SEND_SCORE,
           game: this.state.gameId,
           score,
           display: this.state.displayName
-      }
-      this.ws.send(JSON.stringify(data))
+        }
+        this.ws.send(JSON.stringify(data))
+      }, ADMIN_SCOREBOARD_DELAY)
     } else {
         // initiate scoreboard update
         // (small delay to ensure all clients have time to submit scores)
@@ -115,7 +115,7 @@ class Game extends Component {
                 game: this.state.gameId
             }
             this.ws.send(JSON.stringify(adminData))
-        }, ADMIN_SCOREBOARD_DELAY)
+        }, ADMIN_SCOREBOARD_DELAY + 2000)
     }
   }
 

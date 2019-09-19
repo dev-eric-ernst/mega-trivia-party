@@ -14,12 +14,10 @@ class App extends Component {
         <span className="title">Mega Trivia Party</span>
         <span className="shout-out">powered by<br /><a href="https://opentdb.com">Open Trivia Database</a></span>
       </header>
-      <main>
       <Router>
         <Route exact path="/" component={Game} />
         <Route path="/index.html" component={Game} />
       </Router>
-      </main>
       </>
     )
   }

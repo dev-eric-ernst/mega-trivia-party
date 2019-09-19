@@ -1,0 +1,78 @@
+.lobby {
+    width: 80%;
+    margin: 0 auto;
+    background: rgb(231, 130, 0);
+    background: linear-gradient(
+        180deg,
+        rgba(231, 130, 0, 1) 0%,
+        rgba(255, 196, 0, 1) 100%
+    );
+    height: 85%;
+    padding: 50px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.lobby ol {
+    list-style-position: inside;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    width: 60%;
+    margin: 0 auto;
+}
+.lobby ol li {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    color: #eee;
+}
+
+.lobby ol li .large {
+    font-family: 'Righteous', cursive;
+    font-size: 36px;
+    font-weight: bolder;
+}
+
+.lobby h1 {
+    font-family: 'Righteous', cursive;
+    font-size: 48px;
+    color: #eee;
+    margin: 0;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.lobby ul {
+    background-color: #ccc;
+    list-style-type: none;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.lobby ul li {
+    min-width: 100px;
+    display: inline-flex;
+    color: #eee;
+    /*background-color: #74d14c;*/
+    background-color: #8a25b1;
+    font-weight: bolder;
+    font-size: 20px;
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+    justify-content: center;
+    margin: 5px;
+}
+.lobby button {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    width: 300px;
+    padding: 5px;
+    border: 0;
+    border-radius: 15px;
+    color: #eee;
+    background-color: #444;
+}
+.lobby button:hover {
+    font-weight: bold;
+    background-color: #222;
+}

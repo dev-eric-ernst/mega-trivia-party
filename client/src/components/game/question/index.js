@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './Question.css'
+import './index.css'
 
 const INITIAL = 0
 const ACTIVE = 1
@@ -71,8 +71,7 @@ export default class Question extends Component {
                 const score = question.correctIndex === this.state.selectedAnswer
                 ? this.state.scoreDisplay : 0
 
-                // TODO call props method to send score to server
-                this.props.sendScore(score)
+                //this.props.sendScore(score)
 
                 this.setState(_ => ({
                     status: COMPLETE,
@@ -170,22 +169,14 @@ export default class Question extends Component {
         const {question} = this.props
 
         return (
-            <>
-            <div>
-                <span>Category: <span className="category">{question.category}</span></span>
-                <span>
-                    Difficulty:
-                    <span
-                    className="question-difficulty"
-                    >{question.difficulty}</span>
-                </span>
+            <main className="question">
+            <div className="header">
+                <span className="header-info">{question.category}</span>
+                <span className="header-info">Difficulty: <span className="difficulty">{question.difficulty}</span></span>
             </div>
 
-            <div>
-                <p className="question">{decodeHtml(question.text)}</p>
-            </div>
-            
-            <div className="answer-container">
+           <div className="question-display">{decodeHtml(question.text)}</div>
+           <div className="answer-container">
                 <button 
                     className={`answer ${this.getAnswerClassName(0)}`}
                     onClick={() => { this.answerClick(0)}}
@@ -204,23 +195,15 @@ export default class Question extends Component {
                     className={`answer ${this.getAnswerClassName(3)}`}
                     onClick={() => { this.answerClick(3)}}
                 >{this.displayAnswer(3)}</button>
-            </div>
-            <div>
-                <div>
-                    <p className="time-display" id="time-left">
-                        TIME&nbsp;<span id="time" className="time-left">
+                <div className="stats">
+                        TIME&nbsp;<span className="time-left">
                             {this.state.secondsLeft}</span>
-                    </p>
                 </div>
-                {!this.props.isAdmin &&
-                <div>
-                    <p className="score-display">
-                        SCORE&nbsp;<span id="score" className="time-left">{this.state.scoreDisplay}</span>
-                    </p>
+                <div className="stats">
+                    SCORE&nbsp;<span className="time-left">{this.state.scoreDisplay}</span>
                 </div>
-                }
             </div>
-            </>
+            </main>
         )
     }
 }

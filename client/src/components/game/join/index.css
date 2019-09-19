@@ -1,17 +1,30 @@
-h1 {
+.join {
+    width: 80%;
+    margin: 0 auto;
+    background: rgb(231, 130, 0);
+    background: linear-gradient(
+        180deg,
+        rgba(231, 130, 0, 1) 0%,
+        rgba(255, 196, 0, 1) 100%
+    );
+    height: 85%;
+    padding: 50px;
+    box-sizing: border-box;
+}
+.join h1 {
     font-family: 'Righteous', cursive;
     font-size: 48px;
     color: #eee;
     margin: 0;
     text-align: center;
 }
-form {
+.join form {
     margin: 40px auto;
     display: grid;
     grid-template-columns: 5fr 8fr;
     grid-gap: 30px;
 }
-label {
+.join label {
     font-family: 'Roboto', sans-serif;
     font-size: 32px;
     color: #eee;
@@ -20,7 +33,7 @@ label {
     margin-right: 10px;
     text-align: right;
 }
-input[type='text'] {
+.join input[type='text'] {
     font-family: 'Roboto', sans-serif;
     font-size: 18px;
     width: 300px;
@@ -28,10 +41,10 @@ input[type='text'] {
     border-radius: 15px;
     color: #333;
 }
-input[type='submit'] {
+.join input[type='submit'] {
     font-family: 'Roboto', sans-serif;
     font-size: 24px;
-    width: 300px;
+    width: 314px;
     padding: 5px;
     grid-column-start: 2;
     grid-column-end: 3;
@@ -39,4 +52,8 @@ input[type='submit'] {
     border-radius: 15px;
     color: #eee;
     background-color: #8a25b1;
+}
+.join input[type='submit']:hover {
+    font-weight: bold;
+    background-color: #7914a0;
 }

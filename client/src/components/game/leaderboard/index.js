@@ -1,5 +1,6 @@
 import React from 'react'
 import LeaderboardRow from './LeaderboardRow'
+import './index.css'
 
 export default function Leaderboard({ scores, current, total }) {
     const rows = scores.map((entry, i) => (
@@ -12,12 +13,9 @@ export default function Leaderboard({ scores, current, total }) {
         />
     ))
     return (
-        <>
-        <h2>After {current} of {total} questions...</h2>
+        <main class="leaderboard">
+        <h1><span className="wide-text">After </span>{current} of {total}<span className="wide-text"> Questions</span></h1>
         <table>
-            <caption>
-                LEADERBOARD
-            </caption>
             <thead>
                 <tr>
                     <th>#</th>
@@ -30,6 +28,6 @@ export default function Leaderboard({ scores, current, total }) {
                 {rows}
             </tbody>
         </table>
-        </>
+        </main>
     )
 }

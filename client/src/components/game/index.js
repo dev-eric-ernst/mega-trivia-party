@@ -33,9 +33,9 @@ class Game extends Component {
 
   setupWebSocket(config) {
       // set up web socket connection
-      // proxy in package.json not working for web sockets, remove port replace before deployment
-      //const HOST = window.location.origin.replace(/^http/, 'ws').replace(/3000/, '5000')
-      const HOST = window.location.origin.replace(/^http/, 'ws')
+      // proxy in package.json not working for web sockets
+      
+      const HOST = window.location.origin.replace(/^http/, 'ws').replace(/3000/, '5000')
       
       const ws = new WebSocket(HOST)
 

@@ -64,14 +64,18 @@
     .join form {
         margin: 5px auto;
         display: block;
-        grid-template-columns: 100px;
-        grid-gap: 5px;
-        grid-auto-flow: row;
-        width: 400px;
+        width: 90%;
     }
-    .join input {
+    .join input[type='text'] {
         display: block;
         margin: 10px auto;
+        width: 150px;
+        font-size: 12px;
+    }
+    .join input[type='submit'] {
+        display: block;
+        margin: 10px auto;
+        width: 150px;
     }
     .join label {
         display: none;

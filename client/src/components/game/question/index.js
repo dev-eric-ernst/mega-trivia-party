@@ -71,7 +71,7 @@ export default class Question extends Component {
                 const score = question.correctIndex === this.state.selectedAnswer
                 ? this.state.scoreDisplay : 0
 
-                //this.props.sendScore(score)
+                this.props.sendScore(score)
 
                 this.setState(_ => ({
                     status: COMPLETE,

@@ -18,9 +18,11 @@ router.get('/:id/launch', async (req, res) => {
         console.log('Game loaded - id: ' + game.id)
 
         // for dev only
-        //res.redirect(`//${req.hostname}:3000/index.html?admin=${game.id}`)
-
-        res.redirect(`//${req.hostname}/index.html?admin=${game.id}`)
+        if (req.hostname === 'localhost') {
+            res.redirect(`//localhost:3000/index.html?admin=${game.id}`)
+        } else {
+            res.redirect(`//${req.hostname}/index.html?admin=${game.id}`)
+        }
     } catch (e) {
         console.error(e)
         res.status(500).send('An error occurred while launching the game')

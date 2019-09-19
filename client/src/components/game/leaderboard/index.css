@@ -47,6 +47,9 @@
 }
 
 @media screen and (max-width: 900px) {
+    .leaderboard {
+        height: 98%;
+    }
     .leaderboard th {
         font-size: 18px;
         padding: 2px;

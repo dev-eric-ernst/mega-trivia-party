@@ -104,6 +104,9 @@
     margin-right: 20px;
 }
 @media screen and (max-width: 900px) {
+    .question {
+        height: 98%;
+    }
     .question .header {
         display: none;
     }

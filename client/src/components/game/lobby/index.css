@@ -80,6 +80,9 @@
 }
 
 @media screen and (max-width: 900px) {
+    .lobby {
+        height: 98%;
+    }
     .lobby ul {
         display: none;
     }

@@ -40,3 +40,24 @@
     color: #eee;
     text-align: center;
 }
+
+@media screen and (max-width: 900px) {
+    .winner {
+        height: 98%;
+    }
+    .winner .winner-label {
+        font-size: 32px;
+        margin-bottom: 5px;
+    }
+    .winner .winner-display {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    .winner .loser {
+        font-size: 24px;
+    }
+    .winner .loser-display {
+        font-size: 32px;
+    }
+}

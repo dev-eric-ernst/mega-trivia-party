@@ -28,7 +28,7 @@ class Join extends Component {
                 <input
                     type="text"
                     id="game-id"
-                    placeholder="enter the game key"
+                    placeholder="enter the party key"
                     required={true}
                     ref={this.keyRef}
                 />

@@ -2,7 +2,6 @@ import React from 'react'
 import LeaderboardRow from './LeaderboardRow'
 
 export default function Leaderboard({ scores, current, total }) {
-        // reduce player array to HTML (table rows)
     const rows = scores.map((entry, i) => (
         <LeaderboardRow
             rank={i + 1}

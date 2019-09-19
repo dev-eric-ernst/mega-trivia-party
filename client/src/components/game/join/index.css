@@ -52,8 +52,10 @@
     border-radius: 15px;
     color: #eee;
     background-color: #8a25b1;
+    cursor: pointer;
 }
 .join input[type='submit']:hover {
     font-weight: bold;
     background-color: #7914a0;
+    cursor: pointer;
 }

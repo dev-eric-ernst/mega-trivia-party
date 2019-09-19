@@ -19,10 +19,21 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 5000
 const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
+// set up websockets heartbeat
+function noop() {}
+
+function heartbeat() {
+    this.isAlive = true
+}
+
 const wss = new SocketServer({ server })
 
 wss.on('connection', ws => {
     console.log('Client connected')
+
+    ws.isAlive = true
+    ws.on('pong', heartbeat)
+
     ws.on('close', () => console.log('Client disconnected'))
     ws.onmessage = message => {
         const data = JSON.parse(message.data)
@@ -30,3 +41,12 @@ wss.on('connection', ws => {
         dispatcher.dispatchMessage(data, ws)
     }
 })
+
+const interval = setInterval(function ping() {
+    wss.clients.forEach(function each(ws) {
+        if (ws.isAlive === false) return ws.terminate()
+
+        ws.isAlive = false
+        ws.ping(noop)
+    })
+}, 30000)

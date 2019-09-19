@@ -31,60 +31,87 @@ class Game extends Component {
     this.sendScore = this.sendScore.bind(this)
   }
 
-  componentDidMount() {
-    // set up web socket connection
-    // proxy in package.json not working for web sockets, remove port replace before deployment
-    //const HOST = window.location.origin.replace(/^http/, 'ws').replace(/3000/, '5000')
-    const HOST = window.location.origin.replace(/^http/, 'ws')
-    
-    const ws = new WebSocket(HOST)
-    //const controller = new Controller(ws)
+  setupWebSocket(config) {
+      // set up web socket connection
+      // proxy in package.json not working for web sockets, remove port replace before deployment
+      //const HOST = window.location.origin.replace(/^http/, 'ws').replace(/3000/, '5000')
+      const HOST = window.location.origin.replace(/^http/, 'ws')
+      
+      const ws = new WebSocket(HOST)
 
+      ws.onopen = function() {
+        console.log('ws connection to game server open')
+        //heartbeat.call(ws)
+
+        ws.send(JSON.stringify(config.data))
+
+        config.component.setState(_ => config.newState)
+      }
+      ws.onmessage = message => {
+        this.receiveMessage(message)
+      }
+      //ws.on('ping', heartbeat.call(ws))
+      ws.onclose = () => {
+        console.log('ws connection to game server closed')
+        //window.clearTimeout(this.pingTimeout);
+      }
+      
+      this.ws = ws
+
+      // function heartbeat() {
+      //   window.clearTimeout(this.pingTimeout);
+       
+      //   // Use `WebSocket#terminate()`, which immediately destroys the connection,
+      //   // instead of `WebSocket#close()`, which waits for the close timer.
+      //   // Delay should be equal to the interval at which your server
+      //   // sends out pings plus a conservative assumption of the latency.
+      //   this.pingTimeout = window.setTimeout(() => {
+      //     this.terminate();
+      //   }, 30000 + 1000);
+      // }    
+  }
+
+  componentDidMount() {
     const params = new URLSearchParams(window.location.search)
     const gameId = params.get('admin')
-    ws.onopen = () => {
-        console.log('ws connection to game server open')
-
-        if (gameId) {
-            // inform server this is the admin client
-            const data = {
-                type: 'admin',
-                action: ADMIN_WAITING,
-                game: gameId
-            }
-            ws.send(JSON.stringify(data))
-
-            this.setState(_ => (
-              {status: IN_LOBBY, gameId, isAdmin: true}
-            ))
-        }
-        else {
-          this.setState(_ => (
-            {status: WAITING_TO_JOIN}
-          ))
+    if (gameId) {
+      // inform server this is the admin client
+      const config = {
+        data: {
+          action: ADMIN_WAITING,
+          game: gameId
+        },
+        newState: {
+          status: IN_LOBBY,
+          gameId,
+          isAdmin: true
+        },
+        component: this
       }
+      this.setupWebSocket(config)
     }
-    
-    ws.onmessage = message => {
-      this.receiveMessage(message)
-    }
-
-    ws.onclose = () => {
-        console.log('ws connection to game server closed')
+    else {
+      this.setState(_ => (
+        {status: WAITING_TO_JOIN}
+      ))
     }
 
-    this.ws = ws
   }
 
   joinGame(game, display) {
-    const data = {
-      action: JOIN,
-      game,
-      display
+    // attempt to join game
+    const config = {
+      data: {
+        action: JOIN,
+        game,
+        display
+      },
+      newState: {
+        displayName: display
+      },
+      component: this
     }
-    this.ws.send(JSON.stringify(data))
-
-    this.setState(_ => ({displayName: display}))
+    this.setupWebSocket(config)
   }
 
   launchGame() {

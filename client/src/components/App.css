@@ -28,3 +28,9 @@ a:hover {
     color: blue;
     text-decoration: underline;
 }
+
+@media screen and (max-width: 900px) {
+    header {
+        display: none;
+    }
+}

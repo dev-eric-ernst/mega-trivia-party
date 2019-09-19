@@ -71,8 +71,16 @@
     border-radius: 15px;
     color: #eee;
     background-color: #444;
+    cursor: pointer;
 }
 .lobby button:hover {
     font-weight: bold;
     background-color: #222;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 900px) {
+    .lobby ul {
+        display: none;
+    }
 }

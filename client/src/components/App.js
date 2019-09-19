@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <>
       <header>
-        <img src={Logo} alt="Mega Trivia Party Logo" />
+        <img className="logo" src={Logo} alt="Mega Trivia Party Logo" />
         <span className="title">Mega Trivia Party</span>
         <span className="shout-out">powered by<br /><a href="https://opentdb.com">Open Trivia Database</a></span>
       </header>

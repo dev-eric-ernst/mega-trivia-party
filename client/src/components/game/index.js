@@ -34,14 +34,13 @@ class Game extends Component {
   setupWebSocket(config) {
       // set up web socket connection
       // proxy in package.json not working for web sockets, remove port replace before deployment
-      //const HOST = window.location.origin.replace(/^http/, 'ws').replace(/3000/, '5000')
-      const HOST = window.location.origin.replace(/^http/, 'ws')
+      const HOST = window.location.origin.replace(/^http/, 'ws').replace(/3000/, '5000')
+      //const HOST = window.location.origin.replace(/^http/, 'ws')
       
       const ws = new WebSocket(HOST)
 
       ws.onopen = function() {
         console.log('ws connection to game server open')
-        //heartbeat.call(ws)
 
         ws.send(JSON.stringify(config.data))
 
@@ -50,25 +49,12 @@ class Game extends Component {
       ws.onmessage = message => {
         this.receiveMessage(message)
       }
-      //ws.on('ping', heartbeat.call(ws))
+
       ws.onclose = () => {
         console.log('ws connection to game server closed')
-        //window.clearTimeout(this.pingTimeout);
       }
       
       this.ws = ws
-
-      // function heartbeat() {
-      //   window.clearTimeout(this.pingTimeout);
-       
-      //   // Use `WebSocket#terminate()`, which immediately destroys the connection,
-      //   // instead of `WebSocket#close()`, which waits for the close timer.
-      //   // Delay should be equal to the interval at which your server
-      //   // sends out pings plus a conservative assumption of the latency.
-      //   this.pingTimeout = window.setTimeout(() => {
-      //     this.terminate();
-      //   }, 30000 + 1000);
-      // }    
   }
 
   componentDidMount() {

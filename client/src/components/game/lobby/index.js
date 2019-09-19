@@ -12,9 +12,8 @@ export default function Lobby({ gameId, players, launchGame, isAdmin }) {
             </ol>
             }
             <h1>{players.length} PARTY {players.length !== 1 ? 'PEOPLE' : 'PERSON'} IN THE HOUSE</h1>
-            <ul className="player-container">
+            <ul>
                 {playersListItems.length > 0 ? playersListItems : '\u00A0'}
-
             </ul>
             {isAdmin && <p><button onClick={launchGame} id="launch-button">Launch Game</button></p>}
         </main>

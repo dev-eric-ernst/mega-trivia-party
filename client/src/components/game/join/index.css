@@ -59,3 +59,21 @@
     background-color: #7914a0;
     cursor: pointer;
 }
+
+@media screen and (max-width: 900px) {
+    .join form {
+        margin: 5px auto;
+        display: block;
+        grid-template-columns: 100px;
+        grid-gap: 5px;
+        grid-auto-flow: row;
+        width: 400px;
+    }
+    .join input {
+        display: block;
+        margin: 10px auto;
+    }
+    .join label {
+        display: none;
+    }
+}
